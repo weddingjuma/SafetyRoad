@@ -8,6 +8,15 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
 
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_OWNER_DATA" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.READ_OWNER_DATA" >
+    </uses-permission>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -22,27 +31,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
-        <activity
-            android:name="org.android.safetyroad.EntireMapActivity" 
-            />
-        
-        <activity
-            android:name="org.android.safetyroad.LocateSearchActivity" 
-            />
-        
-        <activity
-            android:name="org.android.safetyroad.RouteSearchActivity" 
-            />
-        
-        <activity
-            android:name="org.android.safetyroad.SettingActivity" 
-            />
-        
-        <activity
-            android:name="org.android.safetyroad.SplashActivity" 
-            />        
-        
+        <activity android:name="org.android.safetyroad.EntireMapActivity" />
+        <activity android:name="org.android.safetyroad.LocateSearchActivity" />
+        <activity android:name="org.android.safetyroad.RouteSearchActivity" />
+        <activity android:name="org.android.safetyroad.SettingActivity" />
+        <activity android:name="org.android.safetyroad.SplashActivity" />
     </application>
 
 </manifest>

@@ -8,12 +8,18 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
+    
+    <RelativeLayout
+        android:id="@+id/routeMap"
+        android:layout_width="match_parent"
+        android:layout_height="500dp" >
+    </RelativeLayout>
+    
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RouteSearchActivity" />
-    
-    
+        android:text="RouteSearchActivity"
+        android:layout_below="@id/routeMap" />
     
 
 </RelativeLayout>
