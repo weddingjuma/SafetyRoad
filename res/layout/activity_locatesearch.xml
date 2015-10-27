@@ -1,13 +1,15 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     >
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/main_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
 	    android:layout_alignParentTop="true" 
 	    android:paddingBottom="4dp"
 	    android:background="#34495e"
@@ -36,18 +38,75 @@
             android:layout_alignParentRight="true"
             android:src="@drawable/ic_launcher"
             />	    
+    </LinearLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp">
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:background="@drawable/input_location_img">
+
+        <EditText
+                android:id="@+id/inputLocation"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:hint="장소를 입력하세요."
+                android:textColor="#FF000000"
+                android:textColorHint="#FF000000"
+                android:background="@null"
+                android:textCursorDrawable="@null"
+                android:inputType="text">
+        </EditText>
+
+        <Spinner
+                android:id="@+id/inputLocationSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/inputLocation"
+                android:drawSelectorOnTop="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="10dp">
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/search_list_img">
+        <ListView
+                android:id="@+id/searchList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:groupIndicator="@null"
+                android:divider="#00000000">
+        </ListView>
+    </RelativeLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="10dp">
     </RelativeLayout>
     
     <RelativeLayout
         android:id="@+id/locateSearchMap"
         android:layout_width="match_parent"
-        android:layout_height="500dp" >
+        android:layout_height="230dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
     </RelativeLayout>
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LocateSearchActivity"
-        android:layout_below="@id/locateSearchMap" />
 
-</RelativeLayout>
+</LinearLayout>
