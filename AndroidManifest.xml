@@ -32,7 +32,9 @@
             </intent-filter>
         </activity>
         <activity android:name="org.android.safetyroad.EntireMapActivity" />
-        <activity android:name="org.android.safetyroad.LocateSearchActivity" />
+        <activity
+            android:name="org.android.safetyroad.LocateSearchActivity"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name="org.android.safetyroad.RouteSearchActivity" />
         <activity android:name="org.android.safetyroad.SettingActivity" />
         <activity android:name="org.android.safetyroad.SplashActivity" />

@@ -1,19 +1,26 @@
 package org.android.safetyroad;
 
-import org.android.safetyroad.R;
-
 import com.skp.Tmap.TMapView;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.Window;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 public class LocateSearchActivity extends Activity {
 
 	public static final String APP_KEY = "62305c74-edf5-3198-bdce-ab26eced4be6";
 	private RelativeLayout locateSearchMap;
+	private EditText inputLocation;
+	// private Spinner inputLocationSpinner;
+	private ListView searchListView;
+	private String[] recentList;
+	ArrayAdapter<String> searchListAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,16 +28,32 @@ public class LocateSearchActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_locatesearch);
 
-		// Tmap 생성 및 설정
+		Intent intent = getIntent();
+		String depOrarr = intent.getStringExtra("where");
+
+		inputLocation = (EditText) findViewById(R.id.inputLocation);
+		// inputLocationSpinner = (Spinner)
+		// findViewById(R.id.inputLocationSpinner);
+
+		if (depOrarr.equals("departure"))
+			recentList = getResources().getStringArray(R.array.recentDepartureArray);
+		else
+			recentList = getResources().getStringArray(R.array.recentArriveArray);
+		searchListView = (ListView) findViewById(R.id.searchList);
+
+		searchListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, recentList);
+		searchListView.setAdapter(searchListAdapter);
+
+		// Tmap
 		TMapView tmap = new TMapView(this);
 		tmap.setLanguage(TMapView.LANGUAGE_KOREAN);
 		tmap.setIconVisibility(true);
 		tmap.setZoomLevel(10);
 		tmap.setMapType(TMapView.MAPTYPE_STANDARD);
-		// 목적지를 보여주는 레이아웃에 tmap을 달아준다
+		// ? ?? tmap ? ?
 		locateSearchMap = (RelativeLayout) findViewById(R.id.locateSearchMap);
 		locateSearchMap.addView(tmap);
-		// tmap 개인키 설정
+		// tmap ?
 		tmap.setSKPMapApiKey(APP_KEY);
 	}
 

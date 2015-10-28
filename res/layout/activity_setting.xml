@@ -45,11 +45,21 @@
             >
 		    
             <TextView
+                android:id="@+id/setting_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="연락처"
                 android:textSize="25dp" 
                 android:padding="10dp"/>
+            
+            <ListView 
+                android:layout_below="@id/setting_phone"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:id="@+id/setting_listview"
+                
+                >                               
+            </ListView>
             
         </RelativeLayout>        
         
