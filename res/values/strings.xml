@@ -3,6 +3,19 @@
 
     <string name="app_name">SafetyLoad</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+
+    <string-array name="recentDepartureArray">
+        <item>현재위치</item>
+        <item>서울시 도봉역 언저리</item>
+        <item>서울시 수유 덕성여대 근처 기숙사</item>
+        <item>인천시 주안역 버스15분거리</item>
+        <item>국민대 근처 기숙사요</item>
+    </string-array>
+    <string-array name="recentArriveArray">
+        <item>서울</item>
+        <item>부산</item>
+        <item>대구</item>
+        <item>제주</item>
+    </string-array>
 
 </resources>

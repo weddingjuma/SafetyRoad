@@ -15,10 +15,10 @@ public class SplashActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_splash);
-		
-		Handler handler = new Handler(){
 
-			public void handleMessage(Message msg){
+		Handler handler = new Handler() {
+
+			public void handleMessage(Message msg) {
 				finish();
 			}
 		};

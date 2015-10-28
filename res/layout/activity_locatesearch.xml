@@ -2,111 +2,95 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical" >
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/main_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-	    android:layout_alignParentTop="true" 
-	    android:paddingBottom="4dp"
-	    android:background="#34495e"
-        >
+        android:layout_alignParentTop="true"
+        android:background="#34495e"
+        android:paddingBottom="4dp" >
+
         <ImageView
             android:id="@+id/backBtn"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_launcher"
-            />
-	    <TextView
-	        android:id="@+id/Logo"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:gravity="center_horizontal"
-	        android:text="SafetyRoad"
-	        android:textSize="24dp"
-	        android:textColor="#ffffff"
-	        android:textStyle="bold" />
-	    
-	    <ImageView
+            android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:id="@+id/Logo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="SafetyRoad"
+            android:textColor="#ffffff"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <ImageView
             android:id="@+id/settingBtn"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_launcher"
-            />	    
-    </LinearLayout>
-
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="20dp">
+            android:src="@drawable/ic_launcher" />
     </RelativeLayout>
 
     <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center"
-            android:background="@drawable/input_location_img">
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/input_location_img"
+        android:gravity="center_vertical" >
 
         <EditText
-                android:id="@+id/inputLocation"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:hint="Àå¼Ò¸¦ ÀÔ·ÂÇÏ¼¼¿ä."
-                android:textColor="#FF000000"
-                android:textColorHint="#FF000000"
-                android:background="@null"
-                android:textCursorDrawable="@null"
-                android:inputType="text">
+            android:id="@+id/inputLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:background="@null"
+            android:hint="ìž¥ì†Œë¥¼ ìž…ë ¥í•˜ì„¸ìš”"
+            android:inputType="text"
+            android:textColor="#FF000000"
+            android:textColorHint="#FF000000"
+            android:textCursorDrawable="@null" >
         </EditText>
 
-        <Spinner
-                android:id="@+id/inputLocationSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/inputLocation"
-                android:drawSelectorOnTop="true"/>
-
+        <!--
+             <Spinner
+            android:id="@+id/inputLocationSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/inputLocation"
+            android:drawSelectorOnTop="true" />
+        -->
     </RelativeLayout>
 
     <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="10dp">
-    </RelativeLayout>
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/search_list_img" >
 
-    <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/search_list_img">
         <ListView
-                android:id="@+id/searchList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:groupIndicator="@null"
-                android:divider="#00000000">
+            android:id="@+id/searchList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:divider="#00000000"
+            android:groupIndicator="@null" >
         </ListView>
     </RelativeLayout>
 
     <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="10dp">
-    </RelativeLayout>
-    
-    <RelativeLayout
         android:id="@+id/locateSearchMap"
         android:layout_width="match_parent"
-        android:layout_height="230dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp">
+        android:layout_height="280dp"
+        android:layout_margin="20dp" >
     </RelativeLayout>
 
 </LinearLayout>
