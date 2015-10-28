@@ -23,11 +23,33 @@ public final class R {
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
         public static final int main_background=0x7f020001;
-        public static final int splash_image=0x7f020002;
+        public static final int mainbar_back=0x7f020002;
+        public static final int mainbar_back_nor=0x7f020003;
+        public static final int mainbar_back_push=0x7f020004;
+        public static final int mainbar_set=0x7f020005;
+        public static final int mainbar_set_nor=0x7f020006;
+        public static final int mainbar_set_push=0x7f020007;
+        public static final int safetyroad_logo=0x7f020008;
+        public static final int setting_10min=0x7f020009;
+        public static final int setting_10min_nor=0x7f02000a;
+        public static final int setting_10min_push=0x7f02000b;
+        public static final int setting_15min=0x7f02000c;
+        public static final int setting_15min_nor=0x7f02000d;
+        public static final int setting_15min_push=0x7f02000e;
+        public static final int setting_1min=0x7f02000f;
+        public static final int setting_1min_nor=0x7f020010;
+        public static final int setting_1min_push=0x7f020011;
+        public static final int setting_3min=0x7f020012;
+        public static final int setting_3min_nor=0x7f020013;
+        public static final int setting_3min_push=0x7f020014;
+        public static final int setting_5min=0x7f020015;
+        public static final int setting_5min_nor=0x7f020016;
+        public static final int setting_5min_push=0x7f020017;
+        public static final int splash_image=0x7f020018;
     }
     public static final class id {
         public static final int Logo=0x7f080002;
-        public static final int action_settings=0x7f08000c;
+        public static final int action_settings=0x7f080013;
         public static final int arriveEntry=0x7f080009;
         public static final int backBtn=0x7f080001;
         public static final int departureEntry=0x7f080008;
@@ -35,10 +57,17 @@ public final class R {
         public static final int locateSearchMap=0x7f080006;
         public static final int mainTopLayout=0x7f080007;
         public static final int main_bar=0x7f080000;
+        public static final int popup_text=0x7f08000d;
         public static final int routeMap=0x7f08000b;
         public static final int routeSearchBtn=0x7f080005;
         public static final int searchBtn=0x7f08000a;
         public static final int settingBtn=0x7f080003;
+        public static final int setting_10min=0x7f080011;
+        public static final int setting_15min=0x7f080012;
+        public static final int setting_1min=0x7f08000e;
+        public static final int setting_3min=0x7f08000f;
+        public static final int setting_5min=0x7f080010;
+        public static final int setting_content=0x7f08000c;
     }
     public static final class layout {
         public static final int activity_entiremap=0x7f030000;

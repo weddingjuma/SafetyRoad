@@ -14,6 +14,8 @@ public class SettingActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_setting);
+		
+		
 	}
 
 	@Override
