@@ -16,7 +16,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/mainbar_back" />
 
         <TextView
             android:id="@+id/Logo"
@@ -33,13 +33,13 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/mainbar_set" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/entireMapLayout"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="300dp"
         android:layout_below="@id/main_bar"
         android:layout_margin="20dp" >
     </RelativeLayout>
@@ -50,7 +50,7 @@
         android:layout_height="30dp"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/entireMapLayout"
-        android:layout_marginLeft="80dp"
+        android:layout_marginLeft="40dp"
         android:text="총 소요 시간"
         android:textSize="25sp" />
 
@@ -60,8 +60,9 @@
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_below="@id/totalRouteTime"
-        android:layout_marginRight="80dp"
+        android:layout_marginRight="150dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:text="50분"
         android:textColor="#f2cb61"
         android:textSize="25sp" />
@@ -70,13 +71,11 @@
         android:id="@+id/routeSearchBtn"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/totalMinute"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="35dp"
+        android:layout_marginRight="40dp"
         android:background="#ff5a5a"
-        android:text=" 경로탐색 "
+        android:text="    경로탐색    "
         android:textColor="#ffffff"
         android:textSize="20sp" />
 
