@@ -37,9 +37,9 @@ public class LocateSearchActivity extends Activity {
 	private String[] recentList;
 	private ArrayAdapter<String> searchListAdapter;
 
-	// Ã£À» ÁÖ¼Ò
+	// Ã£ï¿½ï¿½ ï¿½Ö¼ï¿½
 	private String address;
-	// °Ë»ö¹öÆ°
+	// ï¿½Ë»ï¿½ï¿½ï¿½Æ°
 	private Button searchBtn;
 
 	@Override
@@ -56,7 +56,7 @@ public class LocateSearchActivity extends Activity {
 		// inputLocationSpinner = (Spinner)
 		// findViewById(R.id.inputLocationSpinner);
 
-		// main¾×Æ¼ºñÆ¼¿¡¼­ Ãâ¹ßÁö¸¦ ¼±ÅÃÇß´ÂÁö, µµÂøÁö¸¦ ¼±ÅÃÇß´ÂÁö ±¸ºÐÇØ¼­ listview¸¦ ¶ç¿î´Ù.
+		// mainï¿½ï¿½Æ¼ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ listviewï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 		if (DepOrArr.equals("departure"))
 			recentList = getResources().getStringArray(R.array.recentDepartureArray);
 		else
@@ -65,7 +65,7 @@ public class LocateSearchActivity extends Activity {
 		searchListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, recentList);
 		searchListView.setAdapter(searchListAdapter);
 
-		// Tmap ¼³Á¤
+		// Tmap ï¿½ï¿½ï¿½ï¿½
 		TMapView tmap = new TMapView(this);
 		tmap.setLanguage(TMapView.LANGUAGE_KOREAN);
 		tmap.setIconVisibility(true);
@@ -82,7 +82,7 @@ public class LocateSearchActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				// ¼³Á¤ÇÑ ÁÖ¼Ò °Ë»ö
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½Ë»ï¿½
 				address = inputLocation.getText().toString();
 				if (!address.equals("")) {
 					TMapData tmapdata = new TMapData();

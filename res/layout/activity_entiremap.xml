@@ -39,7 +39,7 @@
     <RelativeLayout
         android:id="@+id/entireMapLayout"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="350dp"
         android:layout_below="@id/main_bar"
         android:layout_margin="20dp" >
     </RelativeLayout>
@@ -78,6 +78,6 @@
         android:background="#ff5a5a"
         android:text=" 경로탐색 "
         android:textColor="#ffffff"
-        android:textSize="20sp" />
+        android:textSize="20dp" />
 
 </RelativeLayout>
