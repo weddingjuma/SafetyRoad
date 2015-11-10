@@ -146,7 +146,7 @@ public class EntireMapActivity extends Activity {
 			//moveMyLocation(cacheLocation);
 			cacheLocation = null;
 		}
-		tmap.setTrafficInfo(false);
+		//tmap.setTrafficInfo(false);
 		tmap.setIconVisibility(true);
 		tmap.setZoomLevel(14);
 		tmap.setMapType(TMapView.MAPTYPE_STANDARD);
