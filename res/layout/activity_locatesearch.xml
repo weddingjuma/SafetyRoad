@@ -93,12 +93,13 @@
             android:groupIndicator="@null" >
         </ListView>
     </RelativeLayout>
-
-    <RelativeLayout
+    
+    <com.skp.Tmap.TMapView
         android:id="@+id/locateSearchMap"
         android:layout_width="match_parent"
         android:layout_height="280dp"
         android:layout_margin="20dp" >
-    </RelativeLayout>
+    </com.skp.Tmap.TMapView>
+        
 
 </LinearLayout>
