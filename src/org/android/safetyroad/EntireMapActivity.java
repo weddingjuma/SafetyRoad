@@ -3,39 +3,37 @@ package org.android.safetyroad;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.PointF;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ImageButton;
 
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapData.TMapPathType;
-import com.skp.Tmap.TMapMarkerItem;
-import com.skp.Tmap.TMapPOIItem;
 import com.skp.Tmap.TMapPoint;
 import com.skp.Tmap.TMapPolyLine;
 import com.skp.Tmap.TMapView;
 
 public class EntireMapActivity extends Activity {
 
+	public static final int REQUEST_CODE_SETTING = 1003;
 	public static final int REQUEST_CODE_ROUTE = 1004;
 	public static final String APP_KEY = "62305c74-edf5-3198-bdce-ab26eced4be6";
 
-	//private RelativeLayout entireMapLayout;
-	
-	TMapView tmap;
-	TMapPoint startPoint = null;
-	TMapPoint endPoint = null;
-	Location cacheLocation = null;
-	boolean isInitialized = false;
+	private TMapView tmap;
+	private TMapPoint startPoint;
+	private TMapPoint endPoint;
+	private ImageButton settingBtn;
+	private ImageButton backBtn;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,70 +42,61 @@ public class EntireMapActivity extends Activity {
 		setContentView(R.layout.activity_entiremap);
 		
 		tmap = (TMapView) findViewById(R.id.entireMapLayout);
-		new MapRegisterTask().execute("");
+		settingBtn = (ImageButton) findViewById(R.id.settingBtn);
+		backBtn = (ImageButton) findViewById(R.id.backBtn);
 		
-//		final TMapView tmap = new TMapView(this);
-//		tmap.setLanguage(TMapView.LANGUAGE_KOREAN);
-//		tmap.setIconVisibility(true);
-//		tmap.setZoomLevel(16);
-//		tmap.setMapType(TMapView.MAPTYPE_STANDARD);
-		
-		//entireMapLayout = (RelativeLayout) findViewById(R.id.entireMapLayout);
-		//entireMapLayout.addView(tmap);
-				
-		//tmap.setSKPMapApiKey(APP_KEY);
-		
-		Button routeSearchBtn = (Button) findViewById(R.id.routeSearchBtn);
-		//startPoint.setLatitude(37.5642336);
-		//startPoint.setLongitude(126.973736);
-		
-		//endPoint.setLatitude(37.5744297);
-		//endPoint.setLongitude(126.9927906);
-		
-//		TMapData tmapdata = new TMapData();
-//		
-//		TMapPoint startpoint = new TMapPoint(37.5248, 126.93);
-//		TMapPoint endpoint = new TMapPoint(37.4601, 128.0428);
-		
-//		tmapdata.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, startpoint, endpoint,
-//				new FindPathDataListenerCallback() {
-//				@Override
-//				public void onFindPathData(TMapPolyLine polyLine) {
-//					polyLine.setLineColor(Color.RED);
-//					polyLine.setLineWidth(10);
-//					tmap.addTMapPath(polyLine);
-//				}
-//		});	
-		
-
-//		routeSearchBtn.setOnClickListener(new OnClickListener() {
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				Intent intent = new Intent(getApplicationContext(), RouteSearchActivity.class);
-//				startActivityForResult(intent, REQUEST_CODE_ROUTE);
-//			}
-//		});
-		
-		routeSearchBtn.setOnClickListener(new OnClickListener() {
-			@Override
+		settingBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if (startPoint != null && endPoint != null) {
-					new RouteSearchTask().execute(startPoint,endPoint);
-					startPoint = endPoint = null;
-				}
+				// TODO Auto-generated method stub
+
+				Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+				startActivityForResult(intent, REQUEST_CODE_SETTING);
 			}
 		});
+		
+		backBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}
+		});
+		
+		new MapRegisterTask().execute("");		
+		
+		//mainActivity!!! transfer data!!!
+		startPoint = new TMapPoint(37.56760133023583, 126.98204040527344);
+		endPoint = new TMapPoint(37.570101477782934, 126.9920825958251);
+		
+		new RouteSearchTask().execute(startPoint,endPoint);
+				
+		Button routeSearchBtn = (Button) findViewById(R.id.routeSearchBtn);		
+
+		routeSearchBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent intent = new Intent(getApplicationContext(), RouteSearchActivity.class);
+				startActivityForResult(intent, REQUEST_CODE_ROUTE);
+			}
+		});		
+		
 	}
-	
-	class RouteSearchTask extends AsyncTask<TMapPoint, Integer, TMapPolyLine> {
+		
+	class RouteSearchTask extends AsyncTask<TMapPoint, Integer, ArrayList<TMapPolyLine>> {
 		@Override
-		protected TMapPolyLine doInBackground(TMapPoint... params) {
+		protected ArrayList<TMapPolyLine> doInBackground(TMapPoint... params) {
 			TMapPoint start = params[0];
 			TMapPoint end = params[1];
 			TMapData data = new TMapData();
-			try {
-				TMapPolyLine path = data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, start, end);
+			try {				
+				ArrayList<TMapPolyLine> path = new ArrayList<TMapPolyLine>();
+				
+				TMapPoint middlePoint = new TMapPoint(37.566637, 126.978407);
+				
+				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, start, middlePoint) );
+				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, middlePoint, end) );		
+			
 				return path;
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
@@ -115,11 +104,19 @@ public class EntireMapActivity extends Activity {
 		}
 		
 		@Override
-		protected void onPostExecute(TMapPolyLine result) {
+		protected void onPostExecute(ArrayList<TMapPolyLine> result) {
+			
 			if (result != null) {
-				tmap.addTMapPath(result);
+				
+				for(TMapPolyLine path: result){
+					path.setLineColor(Color.RED);
+					path.setLineWidth(15);
+					
+					tmap.addTMapPath(path);					
+				}
+
 				Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
-				tmap.setTMapPathIcon(bm, bm);
+				tmap.setTMapPathIcon(bm, bm);				
 			}
 		}
 	}
@@ -135,70 +132,10 @@ public class EntireMapActivity extends Activity {
 		@Override
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
-			setUpMap();
+			tmap.setIconVisibility(true);
+			tmap.setZoomLevel(14);
+			tmap.setMapType(TMapView.MAPTYPE_STANDARD);
 		}
-	}
-	
-	private void setUpMap() {
-		isInitialized = true;
-		if (cacheLocation != null) {
-			//moveMap(cacheLocation);
-			//moveMyLocation(cacheLocation);
-			cacheLocation = null;
-		}
-		//tmap.setTrafficInfo(false);
-		tmap.setIconVisibility(true);
-		tmap.setZoomLevel(14);
-		tmap.setMapType(TMapView.MAPTYPE_STANDARD);
-
-		tmap.setOnClickListenerCallBack(new TMapView.OnClickListenerCallback() {
-
-			@Override
-			public boolean onPressUpEvent(ArrayList<TMapMarkerItem> markers,
-					ArrayList<TMapPOIItem> arg1, TMapPoint arg2, PointF arg3) {
-
-				return false;
-			}
-
-			@Override
-			public boolean onPressEvent(ArrayList<TMapMarkerItem> markers,
-					ArrayList<TMapPOIItem> poiitems, TMapPoint point,
-					PointF arg3) {
-				Toast.makeText(
-						EntireMapActivity.this,
-						"lat : " + point.getLatitude() + ",lng : "
-								+ point.getLongitude(), Toast.LENGTH_SHORT)
-						.show();
-				for (TMapMarkerItem item : markers) {
-					Toast.makeText(EntireMapActivity.this,
-							"click marker : " + item.getID(),
-							Toast.LENGTH_SHORT).show();
-				}
-
-				for (TMapPOIItem item : poiitems) {
-					Toast.makeText(EntireMapActivity.this,
-							"poi : " + item.getPOIName(), Toast.LENGTH_SHORT)
-							.show();
-				}
-				//currentPoint = point;
-//				positionView.setText("lat : " + currentPoint.getLatitude()
-//						+ ",lng : " + currentPoint.getLongitude());
-				return false;
-			}
-		});
-
-		tmap.setOnCalloutRightButtonClickListener(new TMapView.OnCalloutRightButtonClickCallback() {
-
-			@Override
-			public void onCalloutRightButton(TMapMarkerItem item) {
-				Toast.makeText(EntireMapActivity.this, "item id : " + item.getID(),
-						Toast.LENGTH_SHORT).show();
-			}
-		});
-		// mMap.setSightVisible(true);
-		// mMap.setCompassMode(true);
-		// mMap.setTrackingMode(true);
-
 	}
 
 	@Override

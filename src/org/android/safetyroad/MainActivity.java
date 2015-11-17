@@ -9,7 +9,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
 
@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
 	public static final int REQUEST_CODE_SETTING = 1003;
 
 	private Button searchBtn;
-	private ImageView settingBtn;
+	private ImageButton settingBtn;
 	private EditText departureEntry;
 	private EditText arriveEntry;
 
@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
 		startActivity(new Intent(this, SplashActivity.class));
 
 		searchBtn = (Button) findViewById(R.id.searchBtn);
-		settingBtn = (ImageView) findViewById(R.id.settingBtn);
+		settingBtn = (ImageButton) findViewById(R.id.settingBtn);
 
 		departureEntry = (EditText) findViewById(R.id.departureEntry);
 		departureEntry.setInputType(0);
