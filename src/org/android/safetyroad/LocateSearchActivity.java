@@ -1,46 +1,56 @@
 package org.android.safetyroad;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
-
+import com.google.android.maps.GeoPoint;
 import com.skp.Tmap.TMapData;
+import com.skp.Tmap.TMapMarkerItem;
 import com.skp.Tmap.TMapPOIItem;
+import com.skp.Tmap.TMapPoint;
 import com.skp.Tmap.TMapView;
-import android.annotation.SuppressLint;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.PointF;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class LocateSearchActivity extends Activity {
 
 	public static final String APP_KEY = "62305c74-edf5-3198-bdce-ab26eced4be6";
-	private RelativeLayout locateSearchMap;
+
 	private EditText inputLocation;
-	// private Spinner inputLocationSpinner;
 	private ListView searchListView;
 	private String[] recentList;
 	private ArrayAdapter<String> searchListAdapter;
 
-	// Ã£ï¿½ï¿½ ï¿½Ö¼ï¿½
+	// Ã£À» ÁÖ¼Ò
 	private String address;
-	// ï¿½Ë»ï¿½ï¿½ï¿½Æ°
+	// °Ë»ö¹öÆ°
 	private Button searchBtn;
+	// Tmap
+	TMapView tmap;
+	boolean isInitialized = false;
+	Location cacheLocation = null;
+	// GPS
+	LocationManager mLocMgr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +63,13 @@ public class LocateSearchActivity extends Activity {
 
 		inputLocation = (EditText) findViewById(R.id.inputLocation);
 		searchBtn = (Button) findViewById(R.id.searchButton);
-		// inputLocationSpinner = (Spinner)
-		// findViewById(R.id.inputLocationSpinner);
+		tmap = (TMapView) findViewById(R.id.locateSearchMap);
+		new MapRegisterTask().execute("");
+		
+		//Find Current Point
+		mLocMgr = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-		// mainï¿½ï¿½Æ¼ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ listviewï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
+		// main¾×Æ¼ºñÆ¼¿¡¼­ Ãâ¹ßÁö¸¦ ¼±ÅÃÇß´ÂÁö, µµÂøÁö¸¦ ¼±ÅÃÇß´ÂÁö ±¸ºÐÇØ¼­ listview¸¦ ¶ç¿î´Ù.
 		if (DepOrArr.equals("departure"))
 			recentList = getResources().getStringArray(R.array.recentDepartureArray);
 		else
@@ -65,59 +78,160 @@ public class LocateSearchActivity extends Activity {
 		searchListAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, recentList);
 		searchListView.setAdapter(searchListAdapter);
 
-		// Tmap ï¿½ï¿½ï¿½ï¿½
-		TMapView tmap = new TMapView(this);
-		tmap.setLanguage(TMapView.LANGUAGE_KOREAN);
-		tmap.setIconVisibility(true);
-		tmap.setZoomLevel(10);
-		tmap.setMapType(TMapView.MAPTYPE_STANDARD);
-		// ? ?? tmap ? ?
-		locateSearchMap = (RelativeLayout) findViewById(R.id.locateSearchMap);
-		locateSearchMap.addView(tmap);
-		// tmap ?
-		tmap.setSKPMapApiKey(APP_KEY);
-
+		// Locate search
 		searchBtn.setOnClickListener(new OnClickListener() {
-			@SuppressLint("ShowToast")
-			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ ï¿½Ë»ï¿½
+				// Find lng & lat using address
 				address = inputLocation.getText().toString();
-				if (!address.equals("")) {
-					TMapData tmapdata = new TMapData();
-					ArrayList<TMapPOIItem> POIItem = null;
-					try {
-						POIItem = tmapdata.findAddressPOI(address);
-						Toast.makeText(getApplicationContext(), POIItem.get(0).address, Toast.LENGTH_SHORT);
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ParserConfigurationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (FactoryConfigurationError e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (SAXException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+				// address = "µµºÀ¿ª";
+
+				// Is address valid?
+
+				GeoPoint addressPoint = findGeoPoint(address);
+				double lng = addressPoint.getLongitudeE6() / 1E6;
+				double lat = addressPoint.getLatitudeE6() / 1E6;
+				tmap.setCenterPoint(lng, lat);
+				
+				//keyboard hiding
+				InputMethodManager inputMgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+				inputMgr.hideSoftInputFromWindow(searchBtn.getWindowToken(), 0);
 			}
 
+		});
+		
+		tmap.setOnLongClickListenerCallback(new TMapView.OnLongClickListenerCallback() {
+
+			@Override
+			public void onLongPressEvent(ArrayList<TMapMarkerItem> markers, ArrayList<TMapPOIItem> poiitems,
+					TMapPoint point) {
+				new ProcessFindAddress().execute(point.getLatitude(), point.getLongitude());
+			}
 		});
 
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+	class MapRegisterTask extends AsyncTask<String, Integer, Boolean> {
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			tmap.setSKPMapApiKey(APP_KEY);
+			tmap.setLanguage(tmap.LANGUAGE_KOREAN);
+			Log.d("doinbackground", "intrance");
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			setUpMap();
+			Log.d("onpost", "intrance");
+		}
+
+		private void setUpMap() {
+			Log.d("setupmap", "intrance");
+			isInitialized = true;
+			if (cacheLocation != null) {
+				// moveMap(cacheLocation);
+				// moveMyLoation(cacheLocation);  
+				cacheLocation = null;
+			}
+			// tmap.setTrafficInfo(true);
+			tmap.setIconVisibility(true);
+			tmap.setZoomLevel(16);
+			tmap.setMapType(TMapView.MAPTYPE_STANDARD);
+
+			tmap.setOnClickListenerCallBack(new TMapView.OnClickListenerCallback() {
+
+				@Override
+				public boolean onPressUpEvent(ArrayList<TMapMarkerItem> arg0, ArrayList<TMapPOIItem> arg1,
+						TMapPoint arg2, PointF arg3) {
+					// TODO Auto-generated method stub
+					return false;
+				}
+
+				@Override
+				public boolean onPressEvent(ArrayList<TMapMarkerItem> markers, ArrayList<TMapPOIItem> poiitems,
+						TMapPoint point, PointF arg3) {
+					/*
+					 * Toast.makeText(LocateSearchActivity.this, "lat : " +
+					 * point.getLatitude() + ",lng : " + point.getLongitude(),
+					 * Toast.LENGTH_SHORT) .show(); for (TMapMarkerItem item :
+					 * markers) Toast.makeText(LocateSearchActivity.this,
+					 * "click marker : " + item.getID(), Toast.LENGTH_SHORT)
+					 * .show();
+					 * 
+					 * for (TMapPOIItem item : poiitems)
+					 * Toast.makeText(LocateSearchActivity.this, "poi : " +
+					 * item.getPOIName(), Toast.LENGTH_SHORT) .show();
+					 */
+
+					return false;
+				}
+			});
+
+			tmap.setOnCalloutRightButtonClickListener(new TMapView.OnCalloutRightButtonClickCallback() {
+
+				@Override
+				public void onCalloutRightButton(TMapMarkerItem item) {
+					Toast.makeText(LocateSearchActivity.this, "item id : " + item.getID(), Toast.LENGTH_SHORT).show();
+				}
+			});
+			// mMap.setSightVisible(true);
+			// mMap.setCompassMode(true);
+			// mMap.setTrackingMode(true);
+
+			// When user long touch the map, find the address by lng&lat and set
+			// the input EditText
+		}
+	}
+
+	private class ProcessFindAddress extends AsyncTask<Double, Void, String> {
+
+		@Override
+		protected String doInBackground(Double... params) {
+			try {
+				TMapData tmapdata = new TMapData();
+				String changeAddress = "Not Changed";
+				changeAddress = tmapdata.convertGpsToAddress(params[0], params[1]);
+
+				if (changeAddress.equals("Not Changed"))
+					Log.d("LongTouchFindAddress", "Fail" + changeAddress);
+				else
+					Log.d("LongTouchFindAddress", "Success" + changeAddress);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return address;
+		}
+		
+		protected void onPostExecute(String address){
+			Log.d("????", address);
+			inputLocation.setText(address);
+		}
+
+	}
+
+	private GeoPoint findGeoPoint(String address) {
+		Geocoder geocoder = new Geocoder(this);
+		Address addr;
+		GeoPoint location = null;
+		try {
+			List<Address> listAddress = geocoder.getFromLocationName(address, 1);
+			if (listAddress.size() > 0) { // if address found
+				addr = listAddress.get(0); // in Address format
+				int lat = (int) (addr.getLatitude() * 1E6);
+				int lng = (int) (addr.getLongitude() * 1E6);
+				location = new GeoPoint(lat, lng);
+
+				Toast.makeText(LocateSearchActivity.this, "ÁÖ¼Ò·ÎºÎÅÍ ÃëµæÇÑ À§µµ : " + lat / 1E6 + ", °æµµ : " + lng / 1E6,
+						Toast.LENGTH_SHORT).show();
+				// Log.d(TAG, "ÁÖ¼Ò·ÎºÎÅÍ ÃëµæÇÑ À§µµ : " + lat + ", °æµµ : " + lng);
+			} else
+				Toast.makeText(LocateSearchActivity.this, "Address Converting Fail", Toast.LENGTH_SHORT).show();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return location;
 	}
 
 }
