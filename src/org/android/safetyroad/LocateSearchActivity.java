@@ -14,7 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.android.maps.GeoPoint;
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapMarkerItem;
 import com.skp.Tmap.TMapPOIItem;
@@ -61,8 +60,6 @@ public class LocateSearchActivity extends Activity {
 	Location cacheLocation = null;
 	// GPS
 	private GpsInfo gps;
-	private static double tmpLat;
-	private static double tmpLon;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,12 +94,9 @@ public class LocateSearchActivity extends Activity {
 				// Find lng & lat using address
 				address = inputLocation.getText().toString();
 
-				// Is address valid?
-				FindGeo fg = new FindGeo(LocateSearchActivity.this);
-				GeoPoint addressPoint = fg.findGeoPoint(address);
-				double lng = addressPoint.getLongitudeE6() / 1E6;
-				double lat = addressPoint.getLatitudeE6() / 1E6;
-				tmap.setCenterPoint(lng, lat);
+				// Is address valid? //
+
+				new geoPointTask().execute(address);
 
 				// keyboard hiding
 				InputMethodManager inputMgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -230,49 +224,6 @@ public class LocateSearchActivity extends Activity {
 
 	}
 
-	/*
-	 * private GeoPoint findGeoPoint(String address) { Geocoder geocoder = new
-	 * Geocoder(LocateSearchActivity.this); Address addr; GeoPoint point = null;
-	 * 
-	 * try { List<Address> listAddress = geocoder.getFromLocationName(address,
-	 * 1); if (listAddress.size() > 0) { // if address found addr =
-	 * listAddress.get(0); // in Address format int lat = (int)
-	 * (addr.getLatitude() * 1E6); int lng = (int) (addr.getLongitude() * 1E6);
-	 * 
-	 * point = new GeoPoint(lat, lng);
-	 * 
-	 * Toast.makeText(LocateSearchActivity.this, "주소로부터 취득한 위도 : " + lat / 1E6 +
-	 * ", 경도 : " + lng / 1E6, Toast.LENGTH_SHORT).show(); // Log.d(TAG,
-	 * "주소로부터 취득한 위도 : " + lat + ", 경도 : " + lng); } else
-	 * Toast.makeText(LocateSearchActivity.this, "Address Converting Fail",
-	 * Toast.LENGTH_SHORT).show(); } catch (IOException e) {
-	 * e.printStackTrace(); } return point; }
-	 * 
-	 *//**
-		 * 위도,경도로 주소취득
-		 * 
-		 * @param lat
-		 * @param lng
-		 * @return 주소
-		 *//*
-		 * private String findAddress(double lat, double lng) { StringBuffer bf
-		 * = new StringBuffer(); Geocoder geocoder = new Geocoder(this,
-		 * Locale.KOREA); String currentLocationAddress; List<Address> address;
-		 * try { if (geocoder != null) { // 세번째 인수는 최대결과값인데 하나만 리턴받도록 설정했다
-		 * address = geocoder.getFromLocation(lat, lng, 1); // 설정한 데이터로 주소가 리턴된
-		 * 데이터가 있으면 if (address != null && address.size() > 0) { // 주소
-		 * currentLocationAddress = address.get(0).getAddressLine(0).toString();
-		 * 
-		 * // 전송할 주소 데이터 (위도/경도 포함 편집)
-		 * bf.append(currentLocationAddress);//.append(" ");
-		 * //bf.append(lat).append(","); //bf.append(lng); } }
-		 * 
-		 * } catch (IOException e) { Toast.makeText(LocateSearchActivity.this,
-		 * "주소취득 실패", Toast.LENGTH_LONG).show();
-		 * 
-		 * e.printStackTrace(); } return bf.toString(); }
-		 */
-
 	private OnItemClickListener recentListClickListener = new OnItemClickListener() {
 		private String address;
 
@@ -298,26 +249,16 @@ public class LocateSearchActivity extends Activity {
 			// select recent point
 			else if (position >= 1 && position <= 3) {
 				Toast.makeText(LocateSearchActivity.this, "Convert" + position, Toast.LENGTH_LONG).show();
-				Log.d("인간적", "여길");
-				//FindGeo fg = new FindGeo(LocateSearchActivity.this);
-
+				
 				if (isDepOrArr) {
 					address = getResources().getStringArray(R.array.recentDepartureArray)[position];
-					//GeoPoint point = fg.findGeoPoint(address);
-					//double lng = point.getLongitudeE6() / 1E6;
-					//double lat = point.getLatitudeE6() / 1E6;
-					new geoPointTask().execute(address);
-					//tmap.setCenterPoint(lng, lat);
-					tmap.setCenterPoint(tmpLon, tmpLat);
-				} else {
-					address = getResources().getStringArray(R.array.recentArriveArray)[position];
-					//GeoPoint point = fg.findGeoPoint(address);
-					new geoPointTask().execute(address);
-					//double lng = point.getLongitudeE6() / 1E6;
-					//double lat = point.getLatitudeE6() / 1E6;
-					//tmap.setCenterPoint(lng, lat);
-					tmap.setCenterPoint(tmpLon, tmpLat);
+					inputLocation.setText(address);
 				}
+				else {
+					address = getResources().getStringArray(R.array.recentArriveArray)[position];
+					inputLocation.setText(address);
+				}
+				new geoPointTask().execute(address);
 
 			} else {
 				Toast.makeText(LocateSearchActivity.this, "Empty Item" + position, Toast.LENGTH_LONG).show();
@@ -326,33 +267,34 @@ public class LocateSearchActivity extends Activity {
 
 	};
 
-	private class geoPointTask extends AsyncTask<String, Void, Void> {
+	private class geoPointTask extends AsyncTask<String, Void, double[]> {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 		}
 
 		@Override
-		protected Void doInBackground(String... params) {
-			getGeoPoint(getLocationInfo(params[0].replace("\n", " ").replace(" ", "%20"))); // 주소를
-																							// 넘겨준다(공백이나
-																							// 엔터는
-																							// 제거합니다)
+		protected double[] doInBackground(String... params) {
+			// 주소를 넘겨준다. 공백이나 엔터는 제거
 
-			return null;
+			double[] latAndlon = getGeoPoint(getLocationInfo(params[0].replace("\n", " ").replace(" ", "%20")));
+
+			return latAndlon;
 		}
 
 		@Override
-		protected void onPostExecute(Void result) {
-
+		protected void onPostExecute(double[] result) {
+			double lat = result[0];
+			double lon = result[1];
+			tmap.setCenterPoint(lon, lat);
 		}
 	}
 
-	public static JSONObject getLocationInfo(String address) {
+	public JSONObject getLocationInfo(String address) {
 
 		HttpGet httpGet = new HttpGet(
 				"http://maps.google.com/maps/api/geocode/json?address=" + address + "&ka&sensor=false");
-		// 해당 url을 인터넷창에 쳐보면 다양한 위도 경도 정보를 얻을수있다(크롬 으로실행하세요)
+		// 해당 url을 인터넷창에 쳐보면 다양한 위도 경도 정보를 얻을수있다
 		HttpClient client = new DefaultHttpClient();
 		HttpResponse response;
 		StringBuilder stringBuilder = new StringBuilder();
@@ -380,10 +322,11 @@ public class LocateSearchActivity extends Activity {
 		return jsonObject;
 	}
 
-	public static void getGeoPoint(JSONObject jsonObject) {
+	public double[] getGeoPoint(JSONObject jsonObject) {
 
-		Double lon = new Double(0);
-		Double lat = new Double(0);
+		double lon = 0;
+		double lat = 0;
+		double[] retValue = { 0, 0 };
 
 		try {
 			lon = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
@@ -396,12 +339,18 @@ public class LocateSearchActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		tmpLat = lat.doubleValue();
-		tmpLon = lon.doubleValue();
+
+		if (lat == 0 || lon == 0) {
+			Toast.makeText(LocateSearchActivity.this, "Find lat,lon failed", Toast.LENGTH_LONG).show();
+			return retValue;
+		}
 
 		Log.d("myLog", "경도:" + lon); // 위도/경도 결과 출력
 		Log.d("myLog", "위도:" + lat);
+
+		retValue[0] = lat;
+		retValue[1] = lon;
+		return retValue;
 
 	}
 
