@@ -46,9 +46,7 @@ public class EntireMapActivity extends Activity {
 	private TMapPoint endPoint;
 	private ImageButton settingBtn;
 	private ImageButton backBtn;
-	
-	private double totalDistance;
-	
+		
 	private ArrayList<TMapPoint> posOfCCTV;
 	
 	private static String url = "http://openapi.seoul.go.kr:8088/516943625268733134394857784576/json/TB_GC_VVTV_INFO_ID01/1/400/";
@@ -86,6 +84,9 @@ public class EntireMapActivity extends Activity {
 		//mainActivity!!! transfer data!!!
 		startPoint = new TMapPoint(37.481910, 126.883364);
 		endPoint = new TMapPoint(37.486258, 126.882572);
+		
+		tmap.setCenterPoint( (startPoint.getLongitude()+endPoint.getLongitude())/2 
+								, (startPoint.getLatitude()+endPoint.getLatitude())/2 );
 		
 		new RouteSearchTask().execute(startPoint,endPoint);
 						
@@ -226,6 +227,7 @@ public class EntireMapActivity extends Activity {
 	}
 		
 	class RouteSearchTask extends AsyncTask<TMapPoint, Integer, ArrayList<TMapPolyLine>> {
+				
 		@Override
 		protected ArrayList<TMapPolyLine> doInBackground(TMapPoint... params) {
 			TMapPoint start = params[0];
@@ -233,7 +235,7 @@ public class EntireMapActivity extends Activity {
 			
 			StartEndMaker("start", start);
 			StartEndMaker("end", end);
-			
+						
 			TMapData data = new TMapData();
 			try {				
 				ArrayList<TMapPolyLine> path = new ArrayList<TMapPolyLine>();
@@ -254,13 +256,13 @@ public class EntireMapActivity extends Activity {
 		@Override
 		protected void onPostExecute(ArrayList<TMapPolyLine> path) {
 			
-			totalDistance=0;
+			double totalDistance=0;
 			
 			if (path != null) {
 				
 				for(int i=0; i<path.size(); i++){
 					
-					path.get(i).setLineColor(Color.RED);
+					path.get(i).setLineColor(0x33495e);
 					path.get(i).setLineWidth(15);
 					totalDistance += path.get(i).getDistance();
 					
@@ -301,7 +303,7 @@ public class EntireMapActivity extends Activity {
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
 			tmap.setIconVisibility(true);
-			tmap.setZoomLevel(14);
+			tmap.setZoomLevel(15);
 			tmap.setMapType(TMapView.MAPTYPE_STANDARD);
 		}
 	}
