@@ -26,6 +26,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.skp.Tmap.TMapData;
 import com.skp.Tmap.TMapData.TMapPathType;
@@ -45,6 +46,8 @@ public class EntireMapActivity extends Activity {
 	private TMapPoint endPoint;
 	private ImageButton settingBtn;
 	private ImageButton backBtn;
+	
+	private double totalDistance;
 	
 	private ArrayList<TMapPoint> posOfCCTV;
 	
@@ -81,8 +84,8 @@ public class EntireMapActivity extends Activity {
 		new MapRegisterTask().execute("");		
 		
 		//mainActivity!!! transfer data!!!
-		startPoint = new TMapPoint(37.56760133023583, 126.98204040527344);
-		endPoint = new TMapPoint(37.570101477782934, 126.9920825958251);
+		startPoint = new TMapPoint(37.481910, 126.883364);
+		endPoint = new TMapPoint(37.486258, 126.882572);
 		
 		new RouteSearchTask().execute(startPoint,endPoint);
 						
@@ -94,7 +97,7 @@ public class EntireMapActivity extends Activity {
 				startActivityForResult(intent, REQUEST_CODE_ROUTE);
 			}
 		});		
-		
+				
 	}
 	
 	private class setPointOfCCTV extends AsyncTask<String, Void, JSONArray> {
@@ -166,7 +169,7 @@ public class EntireMapActivity extends Activity {
         		System.out.print("latitu : "+t.getLatitude()+" long : "+t.getLongitude()+"\n");
            	}*/
 
-        	setMarkerOfCCTV();
+        	//setMarkerOfCCTV();
         } 
     }
 		
@@ -207,8 +210,6 @@ public class EntireMapActivity extends Activity {
 
 	
 	public void setMarkerOfCCTV(){
-		//정보 긁어와서 넣고
-		//마커로 셋팅하면되나?	
 		
 		for(int i=0; i<posOfCCTV.size(); i++){
 			TMapMarkerItem tItem = new TMapMarkerItem();
@@ -229,11 +230,15 @@ public class EntireMapActivity extends Activity {
 		protected ArrayList<TMapPolyLine> doInBackground(TMapPoint... params) {
 			TMapPoint start = params[0];
 			TMapPoint end = params[1];
+			
+			StartEndMaker("start", start);
+			StartEndMaker("end", end);
+			
 			TMapData data = new TMapData();
 			try {				
 				ArrayList<TMapPolyLine> path = new ArrayList<TMapPolyLine>();
 				
-				TMapPoint middlePoint = new TMapPoint(37.566637, 126.978407);
+				TMapPoint middlePoint = new TMapPoint(37.485905, 126.883331);
 				
 				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, start, middlePoint) );
 				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, middlePoint, end) );		
@@ -247,21 +252,41 @@ public class EntireMapActivity extends Activity {
 		}
 		
 		@Override
-		protected void onPostExecute(ArrayList<TMapPolyLine> result) {
+		protected void onPostExecute(ArrayList<TMapPolyLine> path) {
 			
-			if (result != null) {
+			totalDistance=0;
+			
+			if (path != null) {
 				
-				for(TMapPolyLine path: result){
-					path.setLineColor(Color.RED);
-					path.setLineWidth(15);
+				for(int i=0; i<path.size(); i++){
 					
-					tmap.addTMapPath(path);					
+					path.get(i).setLineColor(Color.RED);
+					path.get(i).setLineWidth(15);
+					totalDistance += path.get(i).getDistance();
+					
+					tmap.addTMapPolyLine("path"+i, path.get(i));
+					//tmap.addTMapPath("path"+i, path.get(i));					
 				}
 
-				Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
-				tmap.setTMapPathIcon(bm, bm);				
+				//Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
+				//tmap.setTMapPathIcon(bm, bm);	
+
+				TextView totalMin = (TextView) findViewById(R.id.totalMinute);
+				totalMin.setText(""+ (int)(totalDistance/50.0) + " 분");
 			}
 		}
+	}
+	
+	public void StartEndMaker(String name, TMapPoint pos){
+		TMapMarkerItem tItem = new TMapMarkerItem();
+		tItem.setTMapPoint(pos);
+		tItem.setName(name);
+		tItem.setVisible(TMapMarkerItem.VISIBLE);
+		Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
+		tItem.setIcon(bm);
+		
+		tItem.setPosition(0.5f, 1.0f);
+		tmap.addMarkerItem(name, tItem);
 	}
 	
 	class MapRegisterTask extends AsyncTask<String, Integer, Boolean> {
