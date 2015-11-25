@@ -88,14 +88,14 @@ public class EntireMapActivity extends Activity {
 		arrLat = intent.getDoubleExtra("arrLat", 0);
 		arrLon = intent.getDoubleExtra("arrLon", 0);
 		
-		startPoint = new TMapPoint(37.481910, 126.883364);
-		endPoint = new TMapPoint(37.486258, 126.882572);
+/*		startPoint = new TMapPoint(37.481910, 126.883364);
+		endPoint = new TMapPoint(37.486258, 126.882572);*/
 		
-/*		startPoint = new TMapPoint(depLat, depLon);
+		startPoint = new TMapPoint(depLat, depLon);
 		endPoint = new TMapPoint(arrLat, arrLon);
 		
 		Log.d("testing", "***start lat: "+startPoint.getLatitude()+" start long: "+startPoint.getLongitude());
-		Log.d("testing", "***end lat: "+endPoint.getLatitude()+" end long: "+endPoint.getLongitude());*/
+		Log.d("testing", "***end lat: "+endPoint.getLatitude()+" end long: "+endPoint.getLongitude());
 		
 		StartEndMaker("start", startPoint);
 		StartEndMaker("end", endPoint);

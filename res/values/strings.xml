@@ -6,15 +6,15 @@
 
     <string-array name="recentDepartureArray">
         <item>현재위치</item>
-        <item>서울시 도봉구 도봉동 삼성래미안</item>
+        <item>가산디지털단지역</item>
         <item>인천시 남구 도화1동 은하빌라</item>
-        <item>서울시 마포구 연남동 240-2</item>
+        <item>구로구 가리봉동 125-20</item>
     </string-array>
     <string-array name="recentArriveArray">
-        <item>서울</item>
-        <item>부산</item>
-        <item>대구</item>
-        <item>제주</item>
+        <item>현재위치</item>
+        <item>구로구 가리봉동 596-2</item>
+        <item>구로구 가리봉동 125-20</item>
+        <item>구로구 구로3동 165-1</item>
     </string-array>
 
 </resources>

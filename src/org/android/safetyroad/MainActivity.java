@@ -30,7 +30,6 @@ public class MainActivity extends Activity {
 	private static PointManager arrPoint = new PointManager();
 	private boolean isDepOrArr;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -95,20 +94,20 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		Intent intent = getIntent(); 
+		Intent intent = getIntent();
 		isDepOrArr = intent.getBooleanExtra("isDepOrArr", false);
 
 		if (isDepOrArr) {
 			depPoint.setLat(intent.getDoubleExtra("Lat", 0));
 			depPoint.setLon(intent.getDoubleExtra("Lon", 0));
 			depPoint.setAddress(intent.getStringExtra("address"));
+		} else {
+			if (intent.getDoubleExtra("Lat", 0) != 0) {
+				arrPoint.setLat(intent.getDoubleExtra("Lat", 0));
+				arrPoint.setLon(intent.getDoubleExtra("Lon", 0));
+				arrPoint.setAddress(intent.getStringExtra("address"));
+			}
 		}
-		else {
-			arrPoint.setLat(intent.getDoubleExtra("Lat", 0));
-			arrPoint.setLon(intent.getDoubleExtra("Lon", 0));
-			arrPoint.setAddress(intent.getStringExtra("address"));
-		}
-
 
 		departureEntry.setText(depPoint.getAddress());
 		arriveEntry.setText(arrPoint.getAddress());
