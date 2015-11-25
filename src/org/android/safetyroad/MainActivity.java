@@ -2,6 +2,7 @@ package org.android.safetyroad;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,18 +19,17 @@ public class MainActivity extends Activity {
 	public static final int REQUEST_CODE_MAP = 1002;
 	public static final int REQUEST_CODE_SETTING = 1003;
 
-	private boolean isFirst = true;
+	private static boolean isFirst = true;
 
 	private Button searchBtn;
 	private ImageButton settingBtn;
 	private EditText departureEntry;
 	private EditText arriveEntry;
 
-	private double depLon, depLat, arrLon, arrLat;
-	private String depAddress, arrAddress;
 	private static PointManager depPoint = new PointManager();
 	private static PointManager arrPoint = new PointManager();
 	private boolean isDepOrArr;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -95,40 +95,21 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		Intent intent = getIntent();
+		Intent intent = getIntent(); 
 		isDepOrArr = intent.getBooleanExtra("isDepOrArr", false);
 
-		if (depPoint.getAddress().equals("")) {
-			Log.d("1", "dddd");
-			if (isDepOrArr) {
-				Log.d("2", "dddd");
-				depLon = intent.getDoubleExtra("Lon", 0);
-				depLat = intent.getDoubleExtra("Lat", 0);
-				depAddress = intent.getStringExtra("address");
-				// departureEntry.setText(depAddress);
-				Log.d("3?", "dddd");
-				depPoint.setLat(depLat);
-				depPoint.setLon(depLon);
-				depPoint.setAddress(depAddress);
-				Log.d("4?", "dddd");
-			}
+		if (isDepOrArr) {
+			depPoint.setLat(intent.getDoubleExtra("Lat", 0));
+			depPoint.setLon(intent.getDoubleExtra("Lon", 0));
+			depPoint.setAddress(intent.getStringExtra("address"));
 		}
-		if (arrPoint.getAddress().equals("")) {
-			Log.d("5", "dddd");
-			if (!isDepOrArr) {
-				Log.d("6", "dddd");
-				arrLon = intent.getDoubleExtra("Lon", 0);
-				arrLat = intent.getDoubleExtra("Lat", 0);
-				arrAddress = intent.getStringExtra("address");
-				Log.d("7", "dddd");
-				// arriveEntry.setText(arrAddress);
-				arrPoint.setLat(arrLat);
-				arrPoint.setLon(arrLon);
-				arrPoint.setAddress(arrAddress);
-				Log.d("8?", "dddd");
-			}
+		else {
+			arrPoint.setLat(intent.getDoubleExtra("Lat", 0));
+			arrPoint.setLon(intent.getDoubleExtra("Lon", 0));
+			arrPoint.setAddress(intent.getStringExtra("address"));
 		}
-		
+
+
 		departureEntry.setText(depPoint.getAddress());
 		arriveEntry.setText(arrPoint.getAddress());
 	}

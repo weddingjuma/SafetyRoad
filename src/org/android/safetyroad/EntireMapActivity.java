@@ -270,7 +270,7 @@ public class EntireMapActivity extends Activity {
 		protected void onPreExecute(){
 			Dialog = new ProgressDialog(EntireMapActivity.this); 
 			Dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); 
-			Dialog.setMessage("경로 검색 중입니다."); 
+			Dialog.setMessage("寃쎈줈 寃??以묒엯?덈떎."); 
 			Dialog.show(); 
 			super.onPreExecute(); 
 		}

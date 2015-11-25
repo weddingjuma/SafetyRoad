@@ -33,6 +33,7 @@ public class SettingActivity extends Activity {
 
 		mAdapter.addItem(getResources().getDrawable(R.drawable.ic_launcher), "문대영", "01074439595");
 
+
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

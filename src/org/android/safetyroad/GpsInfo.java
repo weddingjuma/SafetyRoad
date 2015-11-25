@@ -16,23 +16,26 @@ public class GpsInfo extends Service implements LocationListener {
 
 	private Context mContext;
 
-	// 현재 GPS 사용 유무
+	// Gps enable or not
 	boolean isGPSEnadbled = false;
 
-	// 네트워크 사용 유무
+	// Network enable or not
+
 	boolean isNetworkEnabled = false;
 
 	// GPS status
 	boolean isGetLocation = false;
 
 	Location location;
-	double lat; // 위도
-	double lon; // 경도
 
-	// 최소 GPS 정보 업데이트 거리 10미터
+	double lat; 
+	double lon; 
+
+	// Gps info update MIN distance
 	private static final long MIN_DISTANCE_CHANE_FOR_UPDATES = 10;
 
-	// 최소 GPS 정보 업데이트 시간(밀리세컨이므로 1분)
+	// Gps info update MIN time(milli)
+
 	private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
 
 	protected LocationManager locationMngr;
@@ -46,17 +49,18 @@ public class GpsInfo extends Service implements LocationListener {
 		try {
 			locationMngr = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
 
-			// GPS 정보 가져오기
+			// get the GPS info
 			isGPSEnadbled = locationMngr.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-			// 현재 네트워크 상태 값 알아오기
+			// get the Network info
 			isNetworkEnabled = locationMngr.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
 			if (!isGPSEnadbled && !isNetworkEnabled) {
-				// GPS와 네트워크 사용이 가능하지 않을 때 소스 구현.
+				// When using GPS and network is not available
 			} else {
 				this.isGetLocation = true;
-				// 네트워크 정보로부터 위치값 가져오기
+				// get the location info using Network
+
 				if (isNetworkEnabled) {
 					locationMngr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES,
 							MIN_DISTANCE_CHANE_FOR_UPDATES, this);
@@ -91,14 +95,12 @@ public class GpsInfo extends Service implements LocationListener {
 		return location;
 	}
 
-	// GPS 종료
 	public void stopUsingGPS() {
 		if (locationMngr != null) {
 			locationMngr.removeUpdates(GpsInfo.this);
 		}
 	}
 
-	// 위도값을 가져온다.
 	public double getLatitude() {
 		if (location != null) {
 			lat = location.getLatitude();
@@ -106,7 +108,6 @@ public class GpsInfo extends Service implements LocationListener {
 		return lat;
 	}
 
-	// 경도값을 가져온다.
 	public double getLongitude() {
 		if (location != null) {
 			lon = location.getLongitude();
@@ -115,21 +116,19 @@ public class GpsInfo extends Service implements LocationListener {
 	}
 
 	/**
-	 * GPS 나 wife 정보가 켜져있는지 확인합니다.
+	 * Check the Gps or Wifi info.
 	 */
 	public boolean isGetLocation() {
 		return this.isGetLocation;
 	}
 
-	/**
-     * GPS 정보를 가져오지 못했을때 
-     * 설정값으로 갈지 물어보는 alert 창
-     * */
     public void showSettingsAlert(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
  
         alertDialog.setTitle("GPS 사용유무셋팅");
+
         alertDialog.setMessage("GPS 셋팅이 되지 않았을수도 있습니다.\n 설정창으로 가시겠습니까?");
+
    
         // OK 를 누르게 되면 설정창으로 이동합니다. 
         alertDialog.setPositiveButton("Settings", 
