@@ -33,6 +33,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -46,15 +47,17 @@ public class LocateSearchActivity extends Activity {
 
 	public static final String APP_KEY = "edcbe7e3-2ade-3654-93a9-90c940f92470";
 
+	private ImageButton backBtn;
+	private ImageButton settingBtn;
 	private EditText inputLocation;
 	private ListView searchListView;
 	private String[] recentList;
 	private ArrayAdapter<String> searchListAdapter;
 	private boolean isDepOrArr;
 
-	// ã�� �ּ�
+	// 찾占쏙옙 占쌍쇽옙
 	private String address;
-	// �˻���ư
+	// 占싯삼옙占쏙옙튼
 	private Button searchBtn;
 	// Ok btn
 	private Button okBtn;
@@ -76,6 +79,8 @@ public class LocateSearchActivity extends Activity {
 		Intent intent = getIntent();
 		String DepOrArr = intent.getStringExtra("where");
 
+		backBtn = (ImageButton) findViewById(R.id.backBtn);
+		settingBtn = (ImageButton) findViewById(R.id.settingBtn);
 		inputLocation = (EditText) findViewById(R.id.inputLocation);
 		searchBtn = (Button) findViewById(R.id.searchButton);
 		okBtn = (Button) findViewById(R.id.okBtn);
@@ -136,16 +141,36 @@ public class LocateSearchActivity extends Activity {
 				new ProcessFindAddress().execute(point.getLatitude(), point.getLongitude());
 			}
 		});
+		
+		backBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+				intent.putExtra("Lat", returnLat);
+				intent.putExtra("Lon", returnLon);
+				String current = inputLocation.getText().toString();
+				if (current.equals(""))
+					intent.putExtra("address", "현재위치");
+				intent.putExtra("isDepOrArr", isDepOrArr);
+				startActivity(intent);
+				finish();
+			}
+		});
+		settingBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+				startActivity(intent);
+			}
+		});
 
 	}
-	
-	public void setTMapMaker(double lati, double longi){
-		TMapMarkerItem tItem = new TMapMarkerItem();		
-		
+
+	public void setTMapMaker(double lati, double longi) {
+		TMapMarkerItem tItem = new TMapMarkerItem();
+
 		tItem.setTMapPoint(new TMapPoint(lati, longi));
 		tItem.setName("location");
 		tItem.setVisible(TMapMarkerItem.VISIBLE);
-		Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.map_point_mark)).getBitmap();
+		Bitmap bm = ((BitmapDrawable) getResources().getDrawable(R.drawable.map_point_mark)).getBitmap();
 		tItem.setIcon(bm);
 		tItem.setPosition(0.5f, 1.0f);
 		tmap.addMarkerItem("location", tItem);
@@ -270,7 +295,7 @@ public class LocateSearchActivity extends Activity {
 			if (position == 0) {
 				gps = new GpsInfo(LocateSearchActivity.this);
 				FindGeo fg = new FindGeo(LocateSearchActivity.this);
-				// GPS ������� ��������
+				// GPS 占쏙옙占쏙옙占쏙옙占� 占쏙옙占쏙옙占쏙옙占쏙옙
 				if (gps.isGetLocation()) {
 					double currentLat = gps.getLatitude();
 					double currentLon = gps.getLongitude();
@@ -317,7 +342,7 @@ public class LocateSearchActivity extends Activity {
 
 		@Override
 		protected double[] doInBackground(String... params) {
-			// �ּҸ� �Ѱ��ش�. �����̳� ���ʹ� ����
+			// 占쌍소몌옙 占싼곤옙占쌔댐옙. 占쏙옙占쏙옙占싱놂옙 占쏙옙占싶댐옙 占쏙옙占쏙옙
 
 			double[] latAndlon = getGeoPoint(getLocationInfo(params[0].replace("\n", " ").replace(" ", "%20")));
 
@@ -334,12 +359,13 @@ public class LocateSearchActivity extends Activity {
 			setTMapMaker(returnLat, returnLon);
 		}
 	}
-	
+
 	public JSONObject getLocationInfo(String address) {
 
 		HttpGet httpGet = new HttpGet(
 				"http://maps.google.com/maps/api/geocode/json?address=" + address + "&ka&sensor=false");
-		// �ش� url�� ���ͳ�â�� �ĺ��� �پ��� ���� �浵 ������ �������ִ�
+		// 占쌔댐옙 url占쏙옙 占쏙옙占싶놂옙창占쏙옙 占식븝옙占쏙옙 占쌕억옙占쏙옙 占쏙옙占쏙옙 占썸도 占쏙옙占쏙옙占쏙옙
+		// 占쏙옙占쏙옙占쏙옙占쌍댐옙
 		HttpClient client = new DefaultHttpClient();
 		HttpResponse response;
 		StringBuilder stringBuilder = new StringBuilder();
@@ -390,8 +416,8 @@ public class LocateSearchActivity extends Activity {
 			return retValue;
 		}
 
-		Log.d("myLog", "�浵:" + lon); // ����/�浵 ��� ���
-		Log.d("myLog", "����:" + lat);
+		Log.d("myLog", "占썸도:" + lon); // 占쏙옙占쏙옙/占썸도 占쏙옙占� 占쏙옙占�
+		Log.d("myLog", "占쏙옙占쏙옙:" + lat);
 
 		retValue[0] = lat;
 		retValue[1] = lon;

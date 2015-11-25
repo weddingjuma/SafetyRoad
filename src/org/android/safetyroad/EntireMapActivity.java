@@ -357,12 +357,9 @@ public class EntireMapActivity extends Activity {
 				}
 				
 				Log.d("testing", "routeSearch end");*/
-					
-				TMapPoint middlePoint = new TMapPoint(37.485905, 126.883331);
 				
-				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, start, middlePoint) );
-				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, middlePoint, end) );		
-			
+				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, start, end) );
+				
 				return path;
 				
 			} catch (Exception e) {
