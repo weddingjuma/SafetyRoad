@@ -15,7 +15,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PointF;
@@ -54,6 +56,7 @@ public class LocateSearchActivity extends Activity {
 	private String[] recentList;
 	private ArrayAdapter<String> searchListAdapter;
 	private boolean isDepOrArr;
+	private boolean isInvalid;
 
 	// 찾占쏙옙 占쌍쇽옙
 	private String address;
@@ -141,14 +144,14 @@ public class LocateSearchActivity extends Activity {
 				new ProcessFindAddress().execute(point.getLatitude(), point.getLongitude());
 			}
 		});
-		
+
 		backBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 				intent.putExtra("Lat", returnLat);
 				intent.putExtra("Lon", returnLon);
 				String current = inputLocation.getText().toString();
-				if (current.equals(""))
+				if (current.equals("") || isInvalid == false)
 					intent.putExtra("address", "현재위치");
 				intent.putExtra("isDepOrArr", isDepOrArr);
 				startActivity(intent);
@@ -282,6 +285,7 @@ public class LocateSearchActivity extends Activity {
 		protected void onPostExecute(String address) {
 			Log.d("????", address);
 			inputLocation.setText(address);
+			isInvalid = true;
 		}
 
 	}
@@ -305,6 +309,7 @@ public class LocateSearchActivity extends Activity {
 					Toast.makeText(LocateSearchActivity.this,
 							"Find current point : " + fg.findAddress(currentLat, currentLon), Toast.LENGTH_LONG).show();
 					inputLocation.setText(fg.findAddress(currentLat, currentLon));
+					isInvalid = true;					
 					returnLat = currentLat;
 					returnLon = currentLon;
 				} else
@@ -318,9 +323,11 @@ public class LocateSearchActivity extends Activity {
 				if (isDepOrArr) {
 					address = getResources().getStringArray(R.array.recentDepartureArray)[position];
 					inputLocation.setText(address);
+					isInvalid = true;
 				} else {
 					address = getResources().getStringArray(R.array.recentArriveArray)[position];
 					inputLocation.setText(address);
+					isInvalid = true;
 				}
 
 				// get the lat&lon
@@ -353,10 +360,25 @@ public class LocateSearchActivity extends Activity {
 		protected void onPostExecute(double[] result) {
 			double lat = result[0];
 			double lon = result[1];
-			tmap.setCenterPoint(lon, lat);
-			returnLat = lat;
-			returnLon = lon;
-			setTMapMaker(returnLat, returnLon);
+
+			if (!(lat == 0 || lon == 0)) {
+				tmap.setCenterPoint(lon, lat);
+				returnLat = lat;
+				returnLon = lon;
+				setTMapMaker(returnLat, returnLon);
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(LocateSearchActivity.this);
+
+				builder.setTitle("Notice")
+						.setMessage("Invalid address")
+						.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								isInvalid = false;
+							}
+						});
+				AlertDialog dialog = builder.create();
+				dialog.show();
+			}
 		}
 	}
 
@@ -364,8 +386,6 @@ public class LocateSearchActivity extends Activity {
 
 		HttpGet httpGet = new HttpGet(
 				"http://maps.google.com/maps/api/geocode/json?address=" + address + "&ka&sensor=false");
-		// 占쌔댐옙 url占쏙옙 占쏙옙占싶놂옙창占쏙옙 占식븝옙占쏙옙 占쌕억옙占쏙옙 占쏙옙占쏙옙 占썸도 占쏙옙占쏙옙占쏙옙
-		// 占쏙옙占쏙옙占쏙옙占쌍댐옙
 		HttpClient client = new DefaultHttpClient();
 		HttpResponse response;
 		StringBuilder stringBuilder = new StringBuilder();
@@ -400,24 +420,20 @@ public class LocateSearchActivity extends Activity {
 		double[] retValue = { 0, 0 };
 
 		try {
-			lon = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
-					.getJSONObject("location").getDouble("lng");
+			if (!jsonObject.get("status").toString().equals("ZERO_RESULTS")) {
+				lon = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+						.getJSONObject("location").getDouble("lng");
 
-			lat = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
-					.getJSONObject("location").getDouble("lat");
-
+				lat = ((JSONArray) jsonObject.get("results")).getJSONObject(0).getJSONObject("geometry")
+						.getJSONObject("location").getDouble("lat");
+			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		if (lat == 0 || lon == 0) {
-			Toast.makeText(LocateSearchActivity.this, "Find lat,lon failed", Toast.LENGTH_LONG).show();
-			return retValue;
-		}
-
-		Log.d("myLog", "占썸도:" + lon); // 占쏙옙占쏙옙/占썸도 占쏙옙占� 占쏙옙占�
-		Log.d("myLog", "占쏙옙占쏙옙:" + lat);
+		Log.d("testing", "longitude:" + lon); // 占쏙옙占쏙옙/占썸도 占쏙옙占� 占쏙옙占�
+		Log.d("testing", "latitude:" + lat);
 
 		retValue[0] = lat;
 		retValue[1] = lon;
