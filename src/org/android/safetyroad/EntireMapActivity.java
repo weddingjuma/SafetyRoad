@@ -13,9 +13,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ public class EntireMapActivity extends Activity {
 	public static final int REQUEST_CODE_SETTING = 1003;
 	public static final int REQUEST_CODE_ROUTE = 1004;
 	public static final String APP_KEY = "62305c74-edf5-3198-bdce-ab26eced4be6";
+	public static String url = "http://openapi.seoul.go.kr:8088/516943625268733134394857784576/json/TB_GC_VVTV_INFO_ID01/1/400/";
 
 	private TMapView tmap;
 	private TMapPoint startPoint;
@@ -50,10 +52,9 @@ public class EntireMapActivity extends Activity {
 	private ArrayList<TMapPoint> posOfCCTV;	
 	private ArrayList<TMapPoint> cerOfCCTV;	
 	
-	private double depLon, depLat, arrLon, arrLat;
+	private double depLon, depLat, arrLon, arrLat;	
+	private ProgressDialog Dialog;
 	
-	private static String url = "http://openapi.seoul.go.kr:8088/516943625268733134394857784576/json/TB_GC_VVTV_INFO_ID01/1/400/";
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -119,7 +120,10 @@ public class EntireMapActivity extends Activity {
 	}
 	
 	private class setPointOfCCTV extends AsyncTask<String, Void, JSONArray> {
-			
+		@Override
+		protected void onPreExecute(){
+		}
+		
         @Override
         protected JSONArray doInBackground(String... strs) {
         	
@@ -262,7 +266,14 @@ public class EntireMapActivity extends Activity {
 	}
 		
 	class RouteSearchTask extends AsyncTask<TMapPoint, Integer, ArrayList<TMapPolyLine>> {
-				
+		@Override
+		protected void onPreExecute(){
+			Dialog = new ProgressDialog(EntireMapActivity.this); 
+			Dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); 
+			Dialog.setMessage("경로 검색 중입니다."); 
+			Dialog.show(); 
+			super.onPreExecute(); 
+		}
 		@Override
 		protected ArrayList<TMapPolyLine> doInBackground(TMapPoint... params) {
 			TMapPoint start = params[0];
@@ -287,7 +298,6 @@ public class EntireMapActivity extends Activity {
 		
 		@Override
 		protected void onPostExecute(ArrayList<TMapPolyLine> path) {
-			
 			double totalDistance=0;
 			
 			if (path != null) {
@@ -302,12 +312,11 @@ public class EntireMapActivity extends Activity {
 					//tmap.addTMapPath("path"+i, path.get(i));					
 				}
 
-				//Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
-				//tmap.setTMapPathIcon(bm, bm);	
-
 				TextView totalMin = (TextView) findViewById(R.id.totalMinute);
 				totalMin.setText(""+ (int)(totalDistance/50.0) + " min");
 			}
+			
+			Dialog.dismiss();
 		}
 	}
 	

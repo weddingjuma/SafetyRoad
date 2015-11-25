@@ -50,9 +50,9 @@ public class LocateSearchActivity extends Activity {
 	private ArrayAdapter<String> searchListAdapter;
 	private boolean isDepOrArr;
 
-	// Ã£À» ÁÖ¼Ò
+	// Ã£ï¿½ï¿½ ï¿½Ö¼ï¿½
 	private String address;
-	// °Ë»ö¹öÆ°
+	// ï¿½Ë»ï¿½ï¿½ï¿½Æ°
 	private Button searchBtn;
 	// Ok btn
 	private Button okBtn;
@@ -82,7 +82,7 @@ public class LocateSearchActivity extends Activity {
 		// Tmap initialize
 		new MapRegisterTask().execute("");
 
-		// main¾×Æ¼ºñÆ¼¿¡¼­ Ãâ¹ßÁö¸¦ ¼±ÅÃÇß´ÂÁö, µµÂøÁö¸¦ ¼±ÅÃÇß´ÂÁö ±¸ºÐÇØ¼­ listview¸¦ ¶ç¿î´Ù.
+		// mainï¿½ï¿½Æ¼ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ listviewï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 		// isDepOrArr=true -> Dep / isDepOrArr=false -> Arr
 		if (DepOrArr.equals("departure")) {
 			recentList = getResources().getStringArray(R.array.recentDepartureArray);
@@ -169,7 +169,7 @@ public class LocateSearchActivity extends Activity {
 			tmap.setMapType(TMapView.MAPTYPE_STANDARD);
 			gps = new GpsInfo(LocateSearchActivity.this);
 
-			// GPS »ç¿ëÀ¯¹« °¡Á®¿À±â + ÇöÀçÀ§Ä¡·Î setup
+			// GPS ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ + ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ setup
 			if (gps.isGetLocation()) {
 				double currentLat = gps.getLatitude();
 				double currentLon = gps.getLongitude();
@@ -257,7 +257,7 @@ public class LocateSearchActivity extends Activity {
 			if (position == 0) {
 				gps = new GpsInfo(LocateSearchActivity.this);
 				FindGeo fg = new FindGeo(LocateSearchActivity.this);
-				// GPS »ç¿ëÀ¯¹« °¡Á®¿À±â
+				// GPS ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				if (gps.isGetLocation()) {
 					double currentLat = gps.getLatitude();
 					double currentLon = gps.getLongitude();
@@ -304,7 +304,7 @@ public class LocateSearchActivity extends Activity {
 
 		@Override
 		protected double[] doInBackground(String... params) {
-			// ÁÖ¼Ò¸¦ ³Ñ°ÜÁØ´Ù. °ø¹éÀÌ³ª ¿£ÅÍ´Â Á¦°Å
+			// ï¿½Ö¼Ò¸ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½Í´ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 			double[] latAndlon = getGeoPoint(getLocationInfo(params[0].replace("\n", " ").replace(" ", "%20")));
 
@@ -325,7 +325,7 @@ public class LocateSearchActivity extends Activity {
 
 		HttpGet httpGet = new HttpGet(
 				"http://maps.google.com/maps/api/geocode/json?address=" + address + "&ka&sensor=false");
-		// ÇØ´ç urlÀ» ÀÎÅÍ³ÝÃ¢¿¡ ÃÄº¸¸é ´Ù¾çÇÑ À§µµ °æµµ Á¤º¸¸¦ ¾òÀ»¼öÀÖ´Ù
+		// ï¿½Ø´ï¿½ urlï¿½ï¿½ ï¿½ï¿½ï¿½Í³ï¿½Ã¢ï¿½ï¿½ ï¿½Äºï¿½ï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½æµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½
 		HttpClient client = new DefaultHttpClient();
 		HttpResponse response;
 		StringBuilder stringBuilder = new StringBuilder();
@@ -376,8 +376,8 @@ public class LocateSearchActivity extends Activity {
 			return retValue;
 		}
 
-		Log.d("myLog", "°æµµ:" + lon); // À§µµ/°æµµ °á°ú Ãâ·Â
-		Log.d("myLog", "À§µµ:" + lat);
+		Log.d("myLog", "ï¿½æµµ:" + lon); // ï¿½ï¿½ï¿½ï¿½/ï¿½æµµ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+		Log.d("myLog", "ï¿½ï¿½ï¿½ï¿½:" + lat);
 
 		retValue[0] = lat;
 		retValue[1] = lon;
