@@ -121,7 +121,7 @@ public class LocateSearchActivity extends Activity {
 				returnIntent.putExtra("Lon", returnLon);
 				returnIntent.putExtra("address", inputLocation.getText().toString());
 				returnIntent.putExtra("isDepOrArr", isDepOrArr);
-				startActivityForResult(returnIntent, R.layout.activity_main);
+				startActivity(returnIntent);
 				finish();
 			}
 		});
