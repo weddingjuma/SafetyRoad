@@ -128,7 +128,10 @@ public class LocateSearchActivity extends Activity {
 				Intent returnIntent = new Intent(getApplicationContext(), MainActivity.class);
 				returnIntent.putExtra("Lat", returnLat);
 				returnIntent.putExtra("Lon", returnLon);
-				returnIntent.putExtra("address", inputLocation.getText().toString());
+				if(inputLocation.getText().toString().equals("") || isInvalid == false)
+					returnIntent.putExtra("address", "현재위치");
+				else
+					returnIntent.putExtra("address", inputLocation.getText().toString());
 				returnIntent.putExtra("isDepOrArr", isDepOrArr);
 				startActivity(returnIntent);
 				finish();

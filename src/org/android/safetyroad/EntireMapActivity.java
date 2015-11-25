@@ -55,6 +55,8 @@ public class EntireMapActivity extends Activity {
 	private double depLon, depLat, arrLon, arrLat;	
 	private ProgressDialog Dialog;
 	
+	private double topLat, bottomLat, leftLon, rightLon;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -103,8 +105,7 @@ public class EntireMapActivity extends Activity {
 		new setPointOfCCTV().execute();		
 		new MapRegisterTask().execute("");	
 		
-		tmap.setCenterPoint( (startPoint.getLongitude()+endPoint.getLongitude())/2 
-								, (startPoint.getLatitude()+endPoint.getLatitude())/2 );
+		customZoomLevel(startPoint, endPoint);
 		
 		//new RouteSearchTask().execute(startPoint,endPoint);
 								
@@ -119,10 +120,47 @@ public class EntireMapActivity extends Activity {
 				
 	}
 	
-	private class setPointOfCCTV extends AsyncTask<String, Void, JSONArray> {
-		@Override
-		protected void onPreExecute(){
+	public void customZoomLevel(TMapPoint start, TMapPoint end){
+	
+		TMapPoint leftTop = new TMapPoint(0, 0);
+		TMapPoint rightBottom = new TMapPoint(0, 0);
+		
+		if(start.getLatitude() > end.getLatitude()){
+			leftTop.setLatitude(start.getLatitude());
+			rightBottom.setLatitude(end.getLatitude());
+			
+			topLat=leftTop.getLatitude();
+			bottomLat=rightBottom.getLatitude();
 		}
+		else{
+			rightBottom.setLatitude(start.getLatitude());
+			leftTop.setLatitude(end.getLatitude());
+			
+			bottomLat=leftTop.getLatitude();
+			topLat=rightBottom.getLatitude();
+		}
+		
+		if(start.getLongitude() < end.getLongitude()){
+			leftTop.setLongitude(start.getLongitude());
+			rightBottom.setLongitude(end.getLongitude());
+			
+			leftLon=leftTop.getLongitude();
+			rightLon=rightBottom.getLongitude();
+		}
+		else{
+			rightBottom.setLongitude(start.getLongitude());
+			leftTop.setLongitude(end.getLongitude());
+			
+			rightLon=leftTop.getLongitude();
+			leftLon=rightBottom.getLongitude();
+		}
+		
+		tmap.zoomToTMapPoint(leftTop, rightBottom);
+		tmap.setCenterPoint( (startPoint.getLongitude()+endPoint.getLongitude())/2 
+				, (startPoint.getLatitude()+endPoint.getLatitude())/2 );
+	}
+	
+	private class setPointOfCCTV extends AsyncTask<String, Void, JSONArray> {
 		
         @Override
         protected JSONArray doInBackground(String... strs) {
@@ -235,7 +273,7 @@ public class EntireMapActivity extends Activity {
 	public void setMarkerOfCCTV(){
 		
 		cerOfCCTV = new ArrayList<TMapPoint>();
-		
+			
 		for(int i=0; i<posOfCCTV.size(); i++){
 			TMapPoint leftTop = tmap.getLeftTopPoint();
 			TMapPoint rightBottom = tmap.getRightBottomPoint();
@@ -319,12 +357,9 @@ public class EntireMapActivity extends Activity {
 				}
 				
 				Log.d("testing", "routeSearch end");*/
-					
-				TMapPoint middlePoint = new TMapPoint(37.485905, 126.883331);
 				
-				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, start, middlePoint) );
-				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, middlePoint, end) );		
-			
+				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, start, end) );
+				
 				return path;
 				
 			} catch (Exception e) {
@@ -388,7 +423,7 @@ public class EntireMapActivity extends Activity {
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
 			tmap.setIconVisibility(true);
-			tmap.setZoomLevel(16);
+			//tmap.setZoomLevel(16);
 			tmap.setMapType(TMapView.MAPTYPE_STANDARD);
 		}
 	}
