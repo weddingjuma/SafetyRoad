@@ -49,6 +49,9 @@ public class EntireMapActivity extends Activity {
 		
 	private ArrayList<TMapPoint> posOfCCTV;
 	
+	
+	private double depLon, depLat, arrLon, arrLat;
+	
 	private static String url = "http://openapi.seoul.go.kr:8088/516943625268733134394857784576/json/TB_GC_VVTV_INFO_ID01/1/400/";
 
 	@Override
@@ -82,8 +85,16 @@ public class EntireMapActivity extends Activity {
 		new MapRegisterTask().execute("");		
 		
 		//mainActivity!!! transfer data!!!
-		startPoint = new TMapPoint(37.481910, 126.883364);
-		endPoint = new TMapPoint(37.486258, 126.882572);
+		Intent intent = getIntent();
+		depLat = intent.getDoubleExtra("depLat", 0);
+		depLon = intent.getDoubleExtra("depLon", 0);
+		arrLat = intent.getDoubleExtra("arrLat", 0);
+		arrLon = intent.getDoubleExtra("arrLon", 0);
+		
+		//startPoint = new TMapPoint(37.481910, 126.883364);
+		//endPoint = new TMapPoint(37.486258, 126.882572);
+		startPoint = new TMapPoint(depLat, depLon);
+		endPoint = new TMapPoint(arrLat, arrLon);
 		
 		tmap.setCenterPoint( (startPoint.getLongitude()+endPoint.getLongitude())/2 
 								, (startPoint.getLatitude()+endPoint.getLatitude())/2 );
@@ -274,7 +285,7 @@ public class EntireMapActivity extends Activity {
 				//tmap.setTMapPathIcon(bm, bm);	
 
 				TextView totalMin = (TextView) findViewById(R.id.totalMinute);
-				totalMin.setText(""+ (int)(totalDistance/50.0) + " 분");
+				totalMin.setText(""+ (int)(totalDistance/50.0) + " 遺�");
 			}
 		}
 	}

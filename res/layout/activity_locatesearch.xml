@@ -48,7 +48,7 @@
 
         <EditText
             android:id="@+id/inputLocation"
-            android:layout_width="250dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
@@ -61,12 +61,20 @@
         </EditText>
 
         <Button
-            android:id="@+id/searchButton"
+            android:id="@+id/okBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:text="검색"
-            android:background="@null" />
+            android:background="@null"
+            android:text="확인" />
+
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/okBtn"
+            android:background="@null"
+            android:text="검색" />
 
         <!--
              <Spinner
@@ -74,7 +82,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/inputLocation"
-            android:drawSelectorOnTop="true" /> -->
+            android:drawSelectorOnTop="true" / -->
+            
     </RelativeLayout>
 
     <RelativeLayout
@@ -93,13 +102,12 @@
             android:groupIndicator="@null" >
         </ListView>
     </RelativeLayout>
-    
+
     <com.skp.Tmap.TMapView
         android:id="@+id/locateSearchMap"
         android:layout_width="match_parent"
         android:layout_height="280dp"
         android:layout_margin="20dp" >
     </com.skp.Tmap.TMapView>
-        
 
 </LinearLayout>

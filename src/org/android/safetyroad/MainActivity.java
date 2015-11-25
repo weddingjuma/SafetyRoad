@@ -16,19 +16,28 @@ public class MainActivity extends Activity {
 	public static final int REQUEST_CODE_LOCATE = 1001;
 	public static final int REQUEST_CODE_MAP = 1002;
 	public static final int REQUEST_CODE_SETTING = 1003;
+	
+	private boolean isFirst = true;
 
 	private Button searchBtn;
 	private ImageButton settingBtn;
 	private EditText departureEntry;
 	private EditText arriveEntry;
+	
+	private double depLon, depLat, arrLon, arrLat;
+	private String depAddress, arrAddress;
+	private boolean isDepOrArr;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-
-		startActivity(new Intent(this, SplashActivity.class));
+		
+		if (isFirst) {
+			startActivity(new Intent(this, SplashActivity.class));
+			isFirst = false;
+		}
 
 		searchBtn = (Button) findViewById(R.id.searchBtn);
 		settingBtn = (ImageButton) findViewById(R.id.settingBtn);
@@ -43,6 +52,11 @@ public class MainActivity extends Activity {
 				// TODO Auto-generated method stub
 
 				Intent intent = new Intent(getApplicationContext(), EntireMapActivity.class);
+				intent.putExtra("depLon", depLon);
+				intent.putExtra("depLat", depLat);
+				intent.putExtra("arrLon", arrLon);
+				intent.putExtra("arrLat", arrLat);
+				
 				startActivityForResult(intent, REQUEST_CODE_MAP);
 			}
 		});
@@ -76,6 +90,20 @@ public class MainActivity extends Activity {
 			}
 		});
 
+		Intent intent = getIntent();
+		isDepOrArr = intent.getBooleanExtra("isDepOrArr", false);
+		
+		if (isDepOrArr) {
+			depLon = intent.getDoubleExtra("Lon", 0);
+			depLat = intent.getDoubleExtra("Lat", 0);
+			depAddress = intent.getStringExtra("address");
+			departureEntry.setText(depAddress);
+		} else {
+			arrLon = intent.getDoubleExtra("Lon", 0);
+			arrLat = intent.getDoubleExtra("Lat", 0);
+			arrAddress = intent.getStringExtra("address");
+			arriveEntry.setText(arrAddress);
+		}
 	}
 
 	@Override

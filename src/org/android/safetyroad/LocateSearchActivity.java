@@ -54,12 +54,16 @@ public class LocateSearchActivity extends Activity {
 	private String address;
 	// 검색버튼
 	private Button searchBtn;
+	// Ok btn
+	private Button okBtn;
 	// Tmap
 	TMapView tmap;
 	boolean isInitialized = false;
 	Location cacheLocation = null;
 	// GPS
 	private GpsInfo gps;
+	private double returnLat = 0;
+	private double returnLon = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +76,14 @@ public class LocateSearchActivity extends Activity {
 
 		inputLocation = (EditText) findViewById(R.id.inputLocation);
 		searchBtn = (Button) findViewById(R.id.searchButton);
+		okBtn = (Button) findViewById(R.id.okBtn);
 		tmap = (TMapView) findViewById(R.id.locateSearchMap);
+		
+		// Tmap initialize
 		new MapRegisterTask().execute("");
 
 		// main액티비티에서 출발지를 선택했는지, 도착지를 선택했는지 구분해서 listview를 띄운다.
+		// isDepOrArr=true -> Dep / isDepOrArr=false -> Arr
 		if (DepOrArr.equals("departure")) {
 			recentList = getResources().getStringArray(R.array.recentDepartureArray);
 			isDepOrArr = true;
@@ -96,7 +104,7 @@ public class LocateSearchActivity extends Activity {
 
 				// Is address valid? //
 
-				new geoPointTask().execute(address);
+				new getLatAndLon().execute(address);
 
 				// keyboard hiding
 				InputMethodManager inputMgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -104,6 +112,20 @@ public class LocateSearchActivity extends Activity {
 			}
 
 		});
+		
+		// Return MainActivity
+		okBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Intent returnIntent = new Intent(getApplicationContext(), MainActivity.class);
+				returnIntent.putExtra("Lat", returnLat);
+				returnIntent.putExtra("Lon", returnLon);
+				returnIntent.putExtra("address", inputLocation.getText().toString());
+				returnIntent.putExtra("isDepOrArr", isDepOrArr);
+				startActivityForResult(returnIntent, R.layout.activity_main);
+				finish();
+			}
+		});
+		
 		// TMAP Long Touch Event
 		tmap.setOnLongClickListenerCallback(new TMapView.OnLongClickListenerCallback() {
 
@@ -152,6 +174,8 @@ public class LocateSearchActivity extends Activity {
 				double currentLat = gps.getLatitude();
 				double currentLon = gps.getLongitude();
 				tmap.setCenterPoint(currentLon, currentLat);
+				returnLat = currentLat;
+				returnLon = currentLon;
 				Toast.makeText(LocateSearchActivity.this, "Find current point", Toast.LENGTH_LONG).show();
 			} else
 				Toast.makeText(LocateSearchActivity.this, "Check the GPS status", Toast.LENGTH_LONG).show();
@@ -242,6 +266,8 @@ public class LocateSearchActivity extends Activity {
 					Toast.makeText(LocateSearchActivity.this,
 							"Find current point : " + fg.findAddress(currentLat, currentLon), Toast.LENGTH_LONG).show();
 					inputLocation.setText(fg.findAddress(currentLat, currentLon));
+					returnLat = currentLat;
+					returnLon = currentLon;
 				} else
 					Toast.makeText(LocateSearchActivity.this, "Check the GPS status", Toast.LENGTH_LONG).show();
 			}
@@ -258,7 +284,9 @@ public class LocateSearchActivity extends Activity {
 					address = getResources().getStringArray(R.array.recentArriveArray)[position];
 					inputLocation.setText(address);
 				}
-				new geoPointTask().execute(address);
+				
+				// get the lat&lon
+				new getLatAndLon().execute(address);
 
 			} else {
 				Toast.makeText(LocateSearchActivity.this, "Empty Item" + position, Toast.LENGTH_LONG).show();
@@ -267,7 +295,8 @@ public class LocateSearchActivity extends Activity {
 
 	};
 
-	private class geoPointTask extends AsyncTask<String, Void, double[]> {
+	private class getLatAndLon extends AsyncTask<String, Void, double[]> {
+		
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -287,6 +316,8 @@ public class LocateSearchActivity extends Activity {
 			double lat = result[0];
 			double lon = result[1];
 			tmap.setCenterPoint(lon, lat);
+			returnLat = lat;
+			returnLon = lon;
 		}
 	}
 

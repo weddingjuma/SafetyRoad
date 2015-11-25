@@ -14,14 +14,14 @@ import android.widget.Toast;
 public class FindGeo {
 	
 	private Context mContext;
-	private GeoPoint point;
+	//private GeoPoint point;
 	private Geocoder geocoder;
 	
 	public FindGeo(Context context) {
 		this.mContext = context;
 	}
 	
-	// 주소로 위도, 경도 취득
+	/*// 주소로 위도, 경도 취득
 	public GeoPoint findGeoPoint(String address) {
 		geocoder = new Geocoder(mContext);
 		Address addr;
@@ -45,10 +45,14 @@ public class FindGeo {
 		}
 		
 		return point;
-	}
+	}*/
 
-	// 위도,경도로 주소취득
 	
+	/**
+	 * Find String address using latitude & longitude 
+	 * params - double lat & lng
+	 * return value - String address
+	 */
 	public String findAddress(double lat, double lng) {
 		StringBuffer bf = new StringBuffer();
 		geocoder = new Geocoder(mContext, Locale.KOREA);
