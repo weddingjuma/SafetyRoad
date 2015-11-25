@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SafetyRoad</string>
+    <string name="app_name">세이프티로드</string>
     <string name="action_settings">Settings</string>
 
     <string-array name="recentDepartureArray">
         <item>현재위치</item>
-        <item>서울시 도봉역 언저리</item>
-        <item>서울시 수유 덕성여대 근처 기숙사</item>
-        <item>인천시 주안역 버스15분거리</item>
-        <item>국민대 근처 기숙사요</item>
+        <item>서울시 도봉구 도봉동 삼성래미안</item>
+        <item>인천시 남구 도화1동 은하빌라</item>
+        <item>서울시 마포구 연남동 240-2</item>
     </string-array>
     <string-array name="recentArriveArray">
         <item>서울</item>
