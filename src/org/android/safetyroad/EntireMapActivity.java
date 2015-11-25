@@ -106,7 +106,7 @@ public class EntireMapActivity extends Activity {
 		tmap.setCenterPoint( (startPoint.getLongitude()+endPoint.getLongitude())/2 
 								, (startPoint.getLatitude()+endPoint.getLatitude())/2 );
 		
-		new RouteSearchTask().execute(startPoint,endPoint);
+		//new RouteSearchTask().execute(startPoint,endPoint);
 								
 		Button routeSearchBtn = (Button) findViewById(R.id.routeSearchBtn);		
 		routeSearchBtn.setOnClickListener(new OnClickListener() {
@@ -192,6 +192,7 @@ public class EntireMapActivity extends Activity {
            	}*/
 
         	setMarkerOfCCTV();
+        	new RouteSearchTask().execute(startPoint,endPoint);
         } 
     }
 		
@@ -270,7 +271,7 @@ public class EntireMapActivity extends Activity {
 		protected void onPreExecute(){
 			Dialog = new ProgressDialog(EntireMapActivity.this); 
 			Dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); 
-			Dialog.setMessage("寃쎈줈 寃??以묒엯?덈떎."); 
+			Dialog.setMessage("Loading..."); 
 			Dialog.show(); 
 			super.onPreExecute(); 
 		}
@@ -283,10 +284,46 @@ public class EntireMapActivity extends Activity {
 			try {				
 				ArrayList<TMapPolyLine> path = new ArrayList<TMapPolyLine>();
 				
-				TMapPoint middlePoint = new TMapPoint(37.485905, 126.883331);
+				TMapPoint currPoint = new TMapPoint(0,0);
+				currPoint.setLatitude(start.getLatitude());
+				currPoint.setLongitude(start.getLongitude());
+				
+				TMapPolyLine tmpP = new TMapPolyLine();
+				double tmpDis=999999999;
+				int tmpIndex=0;
+				
+				cerOfCCTV.add(end);
+				
+				Log.d("testing", "routeSearch start");
+				
+				while(currPoint.getLatitude()!=endPoint.getLatitude()
+						&& currPoint.getLongitude()!=endPoint.getLatitude()){
+				
+					tmpIndex=0;
+					tmpDis=999999999;
+					
+					for(int i=0; i<cerOfCCTV.size(); i++){
+						tmpP = data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, currPoint, cerOfCCTV.get(i));
+						if(tmpP.getDistance() < tmpDis){
+							tmpDis = tmpP.getDistance();
+							tmpIndex=i;
+						}
+					}
+					
+					Log.d("testing", "tmpDis : "+tmpDis);
+					tmpP = data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, currPoint, cerOfCCTV.get(tmpIndex));
+					
+					currPoint = cerOfCCTV.get(tmpIndex);
+					cerOfCCTV.remove(tmpIndex);
+					path.add(tmpP);
+				}
+				
+				Log.d("testing", "routeSearch end");
+					
+				/*TMapPoint middlePoint = new TMapPoint(37.485905, 126.883331);
 				
 				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, start, middlePoint) );
-				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, middlePoint, end) );		
+				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, middlePoint, end) );*/		
 			
 				return path;
 				
