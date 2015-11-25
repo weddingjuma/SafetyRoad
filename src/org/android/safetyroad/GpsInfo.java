@@ -20,12 +20,14 @@ public class GpsInfo extends Service implements LocationListener {
 	boolean isGPSEnadbled = false;
 
 	// Network enable or not
+
 	boolean isNetworkEnabled = false;
 
 	// GPS status
 	boolean isGetLocation = false;
 
 	Location location;
+
 	double lat; 
 	double lon; 
 
@@ -33,6 +35,7 @@ public class GpsInfo extends Service implements LocationListener {
 	private static final long MIN_DISTANCE_CHANE_FOR_UPDATES = 10;
 
 	// Gps info update MIN time(milli)
+
 	private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
 
 	protected LocationManager locationMngr;
@@ -57,6 +60,7 @@ public class GpsInfo extends Service implements LocationListener {
 			} else {
 				this.isGetLocation = true;
 				// get the location info using Network
+
 				if (isNetworkEnabled) {
 					locationMngr.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME_BW_UPDATES,
 							MIN_DISTANCE_CHANE_FOR_UPDATES, this);
@@ -69,7 +73,7 @@ public class GpsInfo extends Service implements LocationListener {
 						}
 					}
 				}
-				// get the location info using Gps
+
 				if (isGPSEnadbled) {
 					if (location == null) {
 						locationMngr.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
@@ -91,14 +95,12 @@ public class GpsInfo extends Service implements LocationListener {
 		return location;
 	}
 
-	// GPS finish
 	public void stopUsingGPS() {
 		if (locationMngr != null) {
 			locationMngr.removeUpdates(GpsInfo.this);
 		}
 	}
 
-	// Get Latitude
 	public double getLatitude() {
 		if (location != null) {
 			lat = location.getLatitude();
@@ -106,7 +108,6 @@ public class GpsInfo extends Service implements LocationListener {
 		return lat;
 	}
 
-	// Get Longitude
 	public double getLongitude() {
 		if (location != null) {
 			lon = location.getLongitude();
@@ -121,15 +122,13 @@ public class GpsInfo extends Service implements LocationListener {
 		return this.isGetLocation;
 	}
 
-	/**
-     * When not importing the Gps info
-     * Open the alert window
-     * */
     public void showSettingsAlert(){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
  
         alertDialog.setTitle("GPS 사용유무셋팅");
-        alertDialog.setMessage("GPS 셋팅이 되지 않았습니다.\n 설정창으로 가시겠습니까?");
+
+        alertDialog.setMessage("GPS 셋팅이 되지 않았을수도 있습니다.\n 설정창으로 가시겠습니까?");
+
    
         // OK 를 누르게 되면 설정창으로 이동합니다. 
         alertDialog.setPositiveButton("Settings", 

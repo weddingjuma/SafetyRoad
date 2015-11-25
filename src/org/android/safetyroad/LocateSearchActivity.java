@@ -23,7 +23,7 @@ import com.skp.Tmap.TMapView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+
 import android.graphics.PointF;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -79,11 +79,10 @@ public class LocateSearchActivity extends Activity {
 		searchBtn = (Button) findViewById(R.id.searchButton);
 		okBtn = (Button) findViewById(R.id.okBtn);
 		tmap = (TMapView) findViewById(R.id.locateSearchMap);
-		
+
 		// Tmap initialize
 		new MapRegisterTask().execute("");
 
-		// main액티비티에서 출발지를 선택했는지, 도착지를 선택했는지 구분해서 listview를 띄운다.
 		// isDepOrArr=true -> Dep / isDepOrArr=false -> Arr
 		if (DepOrArr.equals("departure")) {
 			recentList = getResources().getStringArray(R.array.recentDepartureArray);
@@ -113,7 +112,7 @@ public class LocateSearchActivity extends Activity {
 			}
 
 		});
-		
+
 		// Return MainActivity
 		okBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -126,7 +125,7 @@ public class LocateSearchActivity extends Activity {
 				finish();
 			}
 		});
-		
+
 		// TMAP Long Touch Event
 		tmap.setOnLongClickListenerCallback(new TMapView.OnLongClickListenerCallback() {
 
@@ -170,7 +169,6 @@ public class LocateSearchActivity extends Activity {
 			tmap.setMapType(TMapView.MAPTYPE_STANDARD);
 			gps = new GpsInfo(LocateSearchActivity.this);
 
-			// GPS 사용유무 가져오기 + 현재위치로 setup
 			if (gps.isGetLocation()) {
 				double currentLat = gps.getLatitude();
 				double currentLon = gps.getLongitude();
@@ -276,16 +274,15 @@ public class LocateSearchActivity extends Activity {
 			// select recent point
 			else if (position >= 1 && position <= 3) {
 				Toast.makeText(LocateSearchActivity.this, "Convert" + position, Toast.LENGTH_LONG).show();
-				
+
 				if (isDepOrArr) {
 					address = getResources().getStringArray(R.array.recentDepartureArray)[position];
 					inputLocation.setText(address);
-				}
-				else {
+				} else {
 					address = getResources().getStringArray(R.array.recentArriveArray)[position];
 					inputLocation.setText(address);
 				}
-				
+
 				// get the lat&lon
 				new getLatAndLon().execute(address);
 
@@ -297,7 +294,7 @@ public class LocateSearchActivity extends Activity {
 	};
 
 	private class getLatAndLon extends AsyncTask<String, Void, double[]> {
-		
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -386,11 +383,11 @@ public class LocateSearchActivity extends Activity {
 
 	}
 
-
 	@Override
 	public void onBackPressed() {
 		Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 		startActivity(intent);
 		super.onBackPressed();
 	}
+
 }

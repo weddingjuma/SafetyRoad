@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 	private static PointManager depPoint = new PointManager();
 	private static PointManager arrPoint = new PointManager();
 	private boolean isDepOrArr;
-	
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +108,7 @@ public class MainActivity extends Activity {
 			arrPoint.setLon(intent.getDoubleExtra("Lon", 0));
 			arrPoint.setAddress(intent.getStringExtra("address"));
 		}
+
 
 		departureEntry.setText(depPoint.getAddress());
 		arriveEntry.setText(arrPoint.getAddress());

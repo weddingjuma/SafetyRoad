@@ -31,7 +31,8 @@ public class SettingActivity extends Activity {
 		mAdapter = new ListViewAdapter(this);
 		mListView.setAdapter(mAdapter);
 
-		mAdapter.addItem(getResources().getDrawable(R.drawable.ic_launcher), "臾몃��쁺", "01074439595");
+		mAdapter.addItem(getResources().getDrawable(R.drawable.ic_launcher), "문대영", "01074439595");
+
 
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
