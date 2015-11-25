@@ -47,8 +47,8 @@ public class EntireMapActivity extends Activity {
 	private ImageButton settingBtn;
 	private ImageButton backBtn;
 		
-	private ArrayList<TMapPoint> posOfCCTV;
-	
+	private ArrayList<TMapPoint> posOfCCTV;	
+	private ArrayList<TMapPoint> cerOfCCTV;	
 	
 	private double depLon, depLat, arrLon, arrLat;
 	
@@ -79,10 +79,6 @@ public class EntireMapActivity extends Activity {
 				finish();
 			}
 		});		
-
-		new setPointOfCCTV().execute();
-		
-		new MapRegisterTask().execute("");		
 		
 		//mainActivity!!! transfer data!!!
 		Intent intent = getIntent();
@@ -91,16 +87,26 @@ public class EntireMapActivity extends Activity {
 		arrLat = intent.getDoubleExtra("arrLat", 0);
 		arrLon = intent.getDoubleExtra("arrLon", 0);
 		
-		//startPoint = new TMapPoint(37.481910, 126.883364);
-		//endPoint = new TMapPoint(37.486258, 126.882572);
-		startPoint = new TMapPoint(depLat, depLon);
+		startPoint = new TMapPoint(37.481910, 126.883364);
+		endPoint = new TMapPoint(37.486258, 126.882572);
+		
+/*		startPoint = new TMapPoint(depLat, depLon);
 		endPoint = new TMapPoint(arrLat, arrLon);
+		
+		Log.d("testing", "***start lat: "+startPoint.getLatitude()+" start long: "+startPoint.getLongitude());
+		Log.d("testing", "***end lat: "+endPoint.getLatitude()+" end long: "+endPoint.getLongitude());*/
+		
+		StartEndMaker("start", startPoint);
+		StartEndMaker("end", endPoint);
+		
+		new setPointOfCCTV().execute();		
+		new MapRegisterTask().execute("");	
 		
 		tmap.setCenterPoint( (startPoint.getLongitude()+endPoint.getLongitude())/2 
 								, (startPoint.getLatitude()+endPoint.getLatitude())/2 );
 		
 		new RouteSearchTask().execute(startPoint,endPoint);
-						
+								
 		Button routeSearchBtn = (Button) findViewById(R.id.routeSearchBtn);		
 		routeSearchBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -181,7 +187,7 @@ public class EntireMapActivity extends Activity {
         		System.out.print("latitu : "+t.getLatitude()+" long : "+t.getLongitude()+"\n");
            	}*/
 
-        	//setMarkerOfCCTV();
+        	setMarkerOfCCTV();
         } 
     }
 		
@@ -223,12 +229,30 @@ public class EntireMapActivity extends Activity {
 	
 	public void setMarkerOfCCTV(){
 		
+		cerOfCCTV = new ArrayList<TMapPoint>();
+		
 		for(int i=0; i<posOfCCTV.size(); i++){
+			TMapPoint leftTop = tmap.getLeftTopPoint();
+			TMapPoint rightBottom = tmap.getRightBottomPoint();
+			
+			if(rightBottom.getLatitude() < posOfCCTV.get(i).getLatitude() &&
+					 posOfCCTV.get(i).getLatitude() < leftTop.getLatitude()){
+				
+				if(leftTop.getLongitude() < posOfCCTV.get(i).getLongitude() &&
+						posOfCCTV.get(i).getLongitude() < rightBottom.getLongitude()){
+					
+					cerOfCCTV.add(posOfCCTV.get(i));
+				}				
+			}
+		}
+		
+		for(int i=0; i<cerOfCCTV.size(); i++){
+			
 			TMapMarkerItem tItem = new TMapMarkerItem();
-			tItem.setTMapPoint(posOfCCTV.get(i));
+			tItem.setTMapPoint(cerOfCCTV.get(i));
 			tItem.setName("cctv"+i);
 			tItem.setVisible(TMapMarkerItem.VISIBLE);
-			Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
+			Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.map_cctv_mark)).getBitmap();
 			tItem.setIcon(bm);
 			
 			tItem.setPosition(0.5f, 1.0f);
@@ -244,9 +268,6 @@ public class EntireMapActivity extends Activity {
 			TMapPoint start = params[0];
 			TMapPoint end = params[1];
 			
-			StartEndMaker("start", start);
-			StartEndMaker("end", end);
-						
 			TMapData data = new TMapData();
 			try {				
 				ArrayList<TMapPolyLine> path = new ArrayList<TMapPolyLine>();
@@ -285,7 +306,7 @@ public class EntireMapActivity extends Activity {
 				//tmap.setTMapPathIcon(bm, bm);	
 
 				TextView totalMin = (TextView) findViewById(R.id.totalMinute);
-				totalMin.setText(""+ (int)(totalDistance/50.0) + " 遺�");
+				totalMin.setText(""+ (int)(totalDistance/50.0) + " min");
 			}
 		}
 	}
@@ -295,8 +316,15 @@ public class EntireMapActivity extends Activity {
 		tItem.setTMapPoint(pos);
 		tItem.setName(name);
 		tItem.setVisible(TMapMarkerItem.VISIBLE);
-		Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.ic_launcher)).getBitmap();
-		tItem.setIcon(bm);
+		
+		if(name.equals("start")){
+			Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.map_arrive_mark)).getBitmap();
+			tItem.setIcon(bm);
+		}
+		else if(name.equals("end")){
+			Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.map_departure_mark)).getBitmap();
+			tItem.setIcon(bm);
+		}
 		
 		tItem.setPosition(0.5f, 1.0f);
 		tmap.addMarkerItem(name, tItem);
@@ -314,7 +342,7 @@ public class EntireMapActivity extends Activity {
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
 			tmap.setIconVisibility(true);
-			tmap.setZoomLevel(15);
+			tmap.setZoomLevel(16);
 			tmap.setMapType(TMapView.MAPTYPE_STANDARD);
 		}
 	}
