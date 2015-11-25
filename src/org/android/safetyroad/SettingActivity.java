@@ -1,20 +1,22 @@
 package org.android.safetyroad;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
-import java.util.Collections;
 
 
 public class SettingActivity extends Activity {
@@ -24,31 +26,89 @@ public class SettingActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_setting);
+		/***********************
+		 		Plus Button
+		 ***********************/
+		ImageButton plusBtn = (ImageButton) findViewById(R.id.phone_plus);
+		plusBtn.setOnClickListener(new ImageButton.OnClickListener() {
+			public void onClick(View v) {
+				plusBtnInputDialog();
+			}
+		});
 
+
+		/***********************
+				List
+		 ***********************/
 		mListView = (ListView)findViewById(R.id.setting_listview);
 
 		mAdapter = new ListViewAdapter(this);
 		mListView.setAdapter(mAdapter);
 
-		mAdapter.addItem(getResources().getDrawable(R.drawable.ic_launcher), "문대영", "01074439595");
-
-
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				ListData mData = mAdapter.mListData.get(position);
-				Toast.makeText(SettingActivity.this, mData.mName, Toast.LENGTH_SHORT).show();
+				Toast.makeText(SettingActivity.this, mData.mName + "  " + mData.mNumber, Toast.LENGTH_SHORT).show();
 			}
 		});
 
-    }
-    
-   private  class ViewHolder{
-	   public ImageView mImage;
-	   public TextView mName;
-	   public TextView mNumber;
-   }
+	}
+	/***********************
+	 	Plus Button
+	 ***********************/
+	public void plusBtnInputDialog(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		builder.setTitle("비상연락망 추가");
+		builder.setCancelable(false);
+
+		LayoutInflater inflater = getLayoutInflater();
+
+		final View inputView = inflater.inflate(R.layout.activity_setting_custom_dialog, null);
+
+		builder.setView(inputView);
+
+		// 취소 버튼
+		builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which){
+				Toast.makeText(getApplicationContext(), "취소", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		// 확인 버튼
+		builder.setPositiveButton("확인", new DialogInterface.OnClickListener(){
+			@Override
+			public  void onClick(DialogInterface dialog, int which){
+
+				EditText et1 = (EditText) inputView.findViewById(R.id.editName);
+				EditText et2 = (EditText) inputView.findViewById(R.id.editPhoneNumber);
+
+				String userName = et1.getText().toString();
+				String userPhoneNumber = et2.getText().toString();
+
+				mAdapter.addItem(userName, userPhoneNumber);
+
+				Toast.makeText(getApplicationContext(), "입력 완료", Toast.LENGTH_SHORT).show();
+			}
+		});
+
+		builder.create();
+		builder.show();
+	}
+
+
+	/***********************
+	 		List
+	 ***********************/
+
+	private  class ViewHolder{
+		public TextView mName;
+		public TextView mNumber;
+	}
 
 	private  class ListViewAdapter extends BaseAdapter{
 		private Context mContext = null;
@@ -75,45 +135,50 @@ public class SettingActivity extends Activity {
 		}
 
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent){
-			ViewHolder holder;
+		public View getView(final int position, View convertView, ViewGroup parent){
+//			if(position >= 5){
+//				Toast.makeText(SettingActivity.this, "연락처 5개를 초과할 수 없습니다.", Toast.LENGTH_SHORT).show();
+//			}
+//			else{
+				ViewHolder holder;
 
-			if(convertView == null) {
-				holder = new ViewHolder();
+				if(convertView == null) {
+					holder = new ViewHolder();
 
-				LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = inflater.inflate(R.layout.activity_setting_custom_listview, null);
+					LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					convertView = inflater.inflate(R.layout.activity_setting_custom_listview, null);
 
-				holder.mImage = (ImageView) convertView.findViewById(R.id.pImage);
-				holder.mName = (TextView) convertView.findViewById(R.id.pName);
-				holder.mNumber = (TextView) convertView.findViewById((R.id.pNumber));
+					holder.mName = (TextView) convertView.findViewById(R.id.listName);
+					holder.mNumber = (TextView) convertView.findViewById((R.id.listPhoneNumber));
 
-				convertView.setTag(holder);
-			}
-			else{
-				holder = (ViewHolder) convertView.getTag();
-			}
+					convertView.setTag(holder);
+				}
+				else{
+					holder = (ViewHolder) convertView.getTag();
+				}
 
-			ListData mData = mListData.get(position);
+				ListData mData = mListData.get(position);
 
-			if(mData.mImage != null){
-				holder.mImage.setVisibility(View.VISIBLE);
-				holder.mImage.setImageDrawable(mData.mImage);
-			}
-			else{
-				holder.mImage.setVisibility(View.GONE);
-			}
+				holder.mName.setText(mData.mName);
+				holder.mNumber.setText(mData.mNumber);
 
-			holder.mName.setText(mData.mName);
-			holder.mNumber.setText(mData.mNumber);
+
+				ImageButton deleteBtn = (ImageButton) convertView.findViewById(R.id.listDeleteButton);
+				//Toast.makeText(SettingActivity.this, "deleteBtn", Toast.LENGTH_SHORT).show();
+				deleteBtn.setOnClickListener(new ImageButton.OnClickListener() {
+					public void onClick(View v) {
+						ListData mData = mAdapter.mListData.get(position);
+						Toast.makeText(SettingActivity.this, mData.mName + "를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+						remove(position);
+					}
+				});
+//			}
 
 			return convertView;
 		}
 
-		public void addItem(Drawable icon, String mName, String mNumber){
-			ListData addInfo = null;
-			addInfo = new ListData();
-			addInfo.mImage = icon;
+		public void addItem(String mName, String mNumber){
+			ListData addInfo = new ListData();
 			addInfo.mName = mName;
 			addInfo.mNumber = mNumber;
 
@@ -125,10 +190,6 @@ public class SettingActivity extends Activity {
 			dataChange();
 		}
 
-		public  void  sort(){
-			Collections.sort(mListData, ListData.ALPHA_COMPARATOR);
-			dataChange();
-		}
 
 		public void dataChange(){
 			mAdapter.notifyDataSetChanged();

@@ -1,6 +1,5 @@
 package org.android.safetyroad;
 
-import android.graphics.drawable.Drawable;
 import java.text.Collator;
 import java.util.Comparator;
 
@@ -9,10 +8,6 @@ import java.util.Comparator;
  * Created by Administrator on 2015-11-10.
  */
 public class ListData {
-
-    // Image
-    public Drawable mImage;
-
     // Phone Name
     public String mName;
 

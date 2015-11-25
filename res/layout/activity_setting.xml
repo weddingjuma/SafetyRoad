@@ -53,22 +53,22 @@
                 android:textSize="25dp" 
                 android:padding="10dp"/>
 
-            <Button
+            <!--<ImageButton-->
+                <!--android:id="@+id/phone_plus"-->
+                <!--android:layout_width="35sp"-->
+                <!--android:layout_height="35sp"-->
+                <!--android:layout_toLeftOf="@+id/phone_minus"-->
+                <!--android:background="@drawable/phone_plus"-->
+                <!--android:layout_marginRight="10sp"-->
+                <!--android:layout_marginTop="5sp"/>-->
+
+            <ImageButton
                 android:id="@+id/phone_plus"
                 android:layout_width="35sp"
                 android:layout_height="35sp"
-                android:layout_toLeftOf="@+id/phone_minus"
-                android:background="@drawable/phone_plus"
-                android:layout_marginRight="10sp"
-                android:layout_marginTop="5sp"/>
-
-            <Button
-                android:id="@+id/phone_minus"
-                android:layout_width="35sp"
-                android:layout_height="35sp"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/phone_minus"
-                android:layout_marginRight="10sp"
+                android:background="@drawable/phone_plus"
+                android:layout_marginRight="30sp"
                 android:layout_marginTop="5sp"/>
             
             <ListView
