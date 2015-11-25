@@ -116,8 +116,9 @@
                     android:layout_height="40dp"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="50dp"
+                    android:paddingLeft="5dp"
                     android:background="#b2d4dd"
-                    android:hint="    출발지"
+                    android:hint="출발지"
                     android:singleLine="true"
                     android:textColor="#ffffffff"
                     android:textColorHint="#ffffffff" />
@@ -129,8 +130,9 @@
                     android:layout_below="@id/departureEntry"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
+                    android:paddingLeft="5dp"
                     android:background="#b2d4dd"
-                    android:hint="    도착지"
+                    android:hint="도착지"
                     android:singleLine="true"
                     android:textColor="#ffffffff"
                     android:textColorHint="#ffffffff" />

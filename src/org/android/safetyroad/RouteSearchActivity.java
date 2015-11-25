@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 
 public class RouteSearchActivity extends Activity {
 
-	public static final String APP_KEY = "62305c74-edf5-3198-bdce-ab26eced4be6";
+	public static final String APP_KEY = "edcbe7e3-2ade-3654-93a9-90c940f92470";
 	private RelativeLayout routeMap;
 
 	@Override
@@ -21,16 +21,16 @@ public class RouteSearchActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_routesearch);
 
-		// Tmap »ý¼º ¹× ¼³Á¤
+		// Tmap ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		TMapView tmap = new TMapView(this);
 		tmap.setLanguage(TMapView.LANGUAGE_KOREAN);
 		tmap.setIconVisibility(true);
 		tmap.setZoomLevel(10);
 		tmap.setMapType(TMapView.MAPTYPE_STANDARD);
-		// ÀüÃ¼ °æ·Î¸¦ º¸¿©ÁÖ´Â ·¹ÀÌ¾Æ¿ô¿¡ tmapÀ» ´Þ¾ÆÁØ´Ù
+		// ï¿½ï¿½Ã¼ ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ì¾Æ¿ï¿½ï¿½ï¿½ tmapï¿½ï¿½ ï¿½Þ¾ï¿½ï¿½Ø´ï¿½
 		routeMap = (RelativeLayout) findViewById(R.id.routeMap);
 		routeMap.addView(tmap);
-		// tmap °³ÀÎÅ° ¼³Á¤
+		// tmap ï¿½ï¿½ï¿½ï¿½Å° ï¿½ï¿½ï¿½ï¿½
 		tmap.setSKPMapApiKey(APP_KEY);
 	}
 

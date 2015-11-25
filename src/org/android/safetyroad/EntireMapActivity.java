@@ -40,7 +40,7 @@ public class EntireMapActivity extends Activity {
 
 	public static final int REQUEST_CODE_SETTING = 1003;
 	public static final int REQUEST_CODE_ROUTE = 1004;
-	public static final String APP_KEY = "62305c74-edf5-3198-bdce-ab26eced4be6";
+	public static final String APP_KEY = "edcbe7e3-2ade-3654-93a9-90c940f92470";
 	public static String url = "http://openapi.seoul.go.kr:8088/516943625268733134394857784576/json/TB_GC_VVTV_INFO_ID01/1/400/";
 
 	private TMapView tmap;
@@ -284,7 +284,7 @@ public class EntireMapActivity extends Activity {
 			try {				
 				ArrayList<TMapPolyLine> path = new ArrayList<TMapPolyLine>();
 				
-				TMapPoint currPoint = new TMapPoint(0,0);
+/*				TMapPoint currPoint = new TMapPoint(0,0);
 				currPoint.setLatitude(start.getLatitude());
 				currPoint.setLongitude(start.getLongitude());
 				
@@ -318,12 +318,12 @@ public class EntireMapActivity extends Activity {
 					path.add(tmpP);
 				}
 				
-				Log.d("testing", "routeSearch end");
+				Log.d("testing", "routeSearch end");*/
 					
-				/*TMapPoint middlePoint = new TMapPoint(37.485905, 126.883331);
+				TMapPoint middlePoint = new TMapPoint(37.485905, 126.883331);
 				
 				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, start, middlePoint) );
-				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, middlePoint, end) );*/		
+				path.add( data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, middlePoint, end) );		
 			
 				return path;
 				

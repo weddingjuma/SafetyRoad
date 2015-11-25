@@ -12,12 +12,12 @@
         android:background="#34495e"
         android:paddingBottom="4dp" >
 
-        <ImageView
+        <ImageButton
             android:id="@+id/backBtn"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/mainbar_back" />
 
         <TextView
             android:id="@+id/Logo"
@@ -29,12 +29,12 @@
             android:textSize="24dp"
             android:textStyle="bold" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/settingBtn"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/mainbar_set" />
     </RelativeLayout>
 
     <RelativeLayout
