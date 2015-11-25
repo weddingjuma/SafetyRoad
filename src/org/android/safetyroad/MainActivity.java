@@ -85,7 +85,6 @@ public class MainActivity extends Activity {
 
 		arriveEntry.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 
 				Intent intent = new Intent(getApplicationContext(), LocateSearchActivity.class);
 				intent.putExtra("where", "arriveEntry");
