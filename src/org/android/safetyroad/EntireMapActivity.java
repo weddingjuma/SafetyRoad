@@ -327,11 +327,11 @@ public class EntireMapActivity extends Activity {
 		tItem.setVisible(TMapMarkerItem.VISIBLE);
 		
 		if(name.equals("start")){
-			Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.map_arrive_mark)).getBitmap();
+			Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.map_departure_mark)).getBitmap();
 			tItem.setIcon(bm);
 		}
 		else if(name.equals("end")){
-			Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.map_departure_mark)).getBitmap();
+			Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.map_arrive_mark)).getBitmap();
 			tItem.setIcon(bm);
 		}
 		
