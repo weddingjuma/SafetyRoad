@@ -14,17 +14,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.skp.Tmap.TMapData;
-import com.skp.Tmap.TMapMarkerItem;
-import com.skp.Tmap.TMapPOIItem;
-import com.skp.Tmap.TMapPoint;
-import com.skp.Tmap.TMapView;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-
+import android.graphics.Bitmap;
 import android.graphics.PointF;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,9 +36,15 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.skp.Tmap.TMapData;
+import com.skp.Tmap.TMapMarkerItem;
+import com.skp.Tmap.TMapPOIItem;
+import com.skp.Tmap.TMapPoint;
+import com.skp.Tmap.TMapView;
+
 public class LocateSearchActivity extends Activity {
 
-	public static final String APP_KEY = "62305c74-edf5-3198-bdce-ab26eced4be6";
+	public static final String APP_KEY = "edcbe7e3-2ade-3654-93a9-90c940f92470";
 
 	private EditText inputLocation;
 	private ListView searchListView;
@@ -51,9 +52,9 @@ public class LocateSearchActivity extends Activity {
 	private ArrayAdapter<String> searchListAdapter;
 	private boolean isDepOrArr;
 
-	// Ã£À» ÁÖ¼Ò
+	// Ã£ï¿½ï¿½ ï¿½Ö¼ï¿½
 	private String address;
-	// °Ë»ö¹öÆ°
+	// ï¿½Ë»ï¿½ï¿½ï¿½Æ°
 	private Button searchBtn;
 	// Ok btn
 	private Button okBtn;
@@ -137,6 +138,18 @@ public class LocateSearchActivity extends Activity {
 		});
 
 	}
+	
+	public void setTMapMaker(double lati, double longi){
+		TMapMarkerItem tItem = new TMapMarkerItem();		
+		
+		tItem.setTMapPoint(new TMapPoint(lati, longi));
+		tItem.setName("location");
+		tItem.setVisible(TMapMarkerItem.VISIBLE);
+		Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.map_point_mark)).getBitmap();
+		tItem.setIcon(bm);
+		tItem.setPosition(0.5f, 1.0f);
+		tmap.addMarkerItem("location", tItem);
+	}
 
 	class MapRegisterTask extends AsyncTask<String, Integer, Boolean> {
 
@@ -175,6 +188,7 @@ public class LocateSearchActivity extends Activity {
 				tmap.setCenterPoint(currentLon, currentLat);
 				returnLat = currentLat;
 				returnLon = currentLon;
+				setTMapMaker(returnLat, returnLon);
 				Toast.makeText(LocateSearchActivity.this, "Find current point", Toast.LENGTH_LONG).show();
 			} else
 				Toast.makeText(LocateSearchActivity.this, "Check the GPS status", Toast.LENGTH_LONG).show();
@@ -256,11 +270,12 @@ public class LocateSearchActivity extends Activity {
 			if (position == 0) {
 				gps = new GpsInfo(LocateSearchActivity.this);
 				FindGeo fg = new FindGeo(LocateSearchActivity.this);
-				// GPS »ç¿ëÀ¯¹« °¡Á®¿À±â
+				// GPS ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 				if (gps.isGetLocation()) {
 					double currentLat = gps.getLatitude();
 					double currentLon = gps.getLongitude();
 					tmap.setCenterPoint(currentLon, currentLat);
+					setTMapMaker(currentLon, currentLat);
 					tmap.setZoomLevel(16);
 					Toast.makeText(LocateSearchActivity.this,
 							"Find current point : " + fg.findAddress(currentLat, currentLon), Toast.LENGTH_LONG).show();
@@ -302,7 +317,7 @@ public class LocateSearchActivity extends Activity {
 
 		@Override
 		protected double[] doInBackground(String... params) {
-			// ÁÖ¼Ò¸¦ ³Ñ°ÜÁØ´Ù. °ø¹éÀÌ³ª ¿£ÅÍ´Â Á¦°Å
+			// ï¿½Ö¼Ò¸ï¿½ ï¿½Ñ°ï¿½ï¿½Ø´ï¿½. ï¿½ï¿½ï¿½ï¿½ï¿½Ì³ï¿½ ï¿½ï¿½ï¿½Í´ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 			double[] latAndlon = getGeoPoint(getLocationInfo(params[0].replace("\n", " ").replace(" ", "%20")));
 
@@ -316,14 +331,15 @@ public class LocateSearchActivity extends Activity {
 			tmap.setCenterPoint(lon, lat);
 			returnLat = lat;
 			returnLon = lon;
+			setTMapMaker(returnLat, returnLon);
 		}
 	}
-
+	
 	public JSONObject getLocationInfo(String address) {
 
 		HttpGet httpGet = new HttpGet(
 				"http://maps.google.com/maps/api/geocode/json?address=" + address + "&ka&sensor=false");
-		// ÇØ´ç urlÀ» ÀÎÅÍ³ÝÃ¢¿¡ ÃÄº¸¸é ´Ù¾çÇÑ À§µµ °æµµ Á¤º¸¸¦ ¾òÀ»¼öÀÖ´Ù
+		// ï¿½Ø´ï¿½ urlï¿½ï¿½ ï¿½ï¿½ï¿½Í³ï¿½Ã¢ï¿½ï¿½ ï¿½Äºï¿½ï¿½ï¿½ ï¿½Ù¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½æµµ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½
 		HttpClient client = new DefaultHttpClient();
 		HttpResponse response;
 		StringBuilder stringBuilder = new StringBuilder();
@@ -374,8 +390,8 @@ public class LocateSearchActivity extends Activity {
 			return retValue;
 		}
 
-		Log.d("myLog", "°æµµ:" + lon); // À§µµ/°æµµ °á°ú Ãâ·Â
-		Log.d("myLog", "À§µµ:" + lat);
+		Log.d("myLog", "ï¿½æµµ:" + lon); // ï¿½ï¿½ï¿½ï¿½/ï¿½æµµ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+		Log.d("myLog", "ï¿½ï¿½ï¿½ï¿½:" + lat);
 
 		retValue[0] = lat;
 		retValue[1] = lon;
