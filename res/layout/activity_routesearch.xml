@@ -36,16 +36,108 @@
             android:src="@drawable/mainbar_set" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/routeMap"
+    <com.skp.Tmap.TMapView
+        android:id="@+id/TMap"
         android:layout_width="match_parent"
-        android:layout_height="500dp" >
-    </RelativeLayout>
+        android:layout_height="350dp"
+        android:layout_below="@id/main_bar"
+        android:layout_margin="20dp" >
+    </com.skp.Tmap.TMapView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/routeMap"
-        android:text="RouteSearchActivity" />
+    <RelativeLayout 
+        android:layout_below="@id/TMap"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <ImageButton
+                    android:id="@+id/entirePath"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/route_entire" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="전체경로"
+                    android:textSize="15dp" />
+            </LinearLayout>
+            
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <ImageButton
+                    android:id="@+id/normalMessage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/route_message" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="On/Off"
+                    android:textSize="15dp" />
+            </LinearLayout>
+            
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <ImageButton
+                    android:id="@+id/urgentMessage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/route_urgent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="긴급메세지"
+                    android:textSize="15dp" />
+            </LinearLayout>
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="남은 시간"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="0 분"
+                    android:textColor="#f2cb61"
+                    android:textSize="30dp" />
+            </LinearLayout>
+        </LinearLayout>
+        
+    </RelativeLayout>
+    
 
 </RelativeLayout>

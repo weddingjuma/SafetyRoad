@@ -114,7 +114,16 @@ public class EntireMapActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(getApplicationContext(), RouteSearchActivity.class);
+				
+				intent.putExtra("depLat", startPoint.getLatitude());
+				intent.putExtra("depLon", startPoint.getLongitude());
+				intent.putExtra("arrLat", endPoint.getLatitude());
+				intent.putExtra("arrLon", endPoint.getLongitude());		
+				
 				startActivityForResult(intent, REQUEST_CODE_ROUTE);
+				
+				/*Intent intent = new Intent(getApplicationContext(), RouteSearchActivity.class);
+				startActivityForResult(intent, REQUEST_CODE_ROUTE);*/
 			}
 		});		
 				
@@ -322,6 +331,7 @@ public class EntireMapActivity extends Activity {
 			try {				
 				ArrayList<TMapPolyLine> path = new ArrayList<TMapPolyLine>();
 				
+				//routeSearch algorithm
 /*				TMapPoint currPoint = new TMapPoint(0,0);
 				currPoint.setLatitude(start.getLatitude());
 				currPoint.setLongitude(start.getLongitude());

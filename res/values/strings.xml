@@ -7,14 +7,14 @@
     <string-array name="recentDepartureArray">
         <item>현재위치</item>
         <item>가산디지털단지역</item>
-        <item>인천시 남구 도화1동 은하빌라</item>
+        <item>독산 현대아파트</item>
         <item>구로구 가리봉동 125-20</item>
     </string-array>
     <string-array name="recentArriveArray">
         <item>현재위치</item>
         <item>구로구 가리봉동 596-2</item>
-        <item>구로구 가리봉동 125-20</item>
-        <item>구로구 구로3동 165-1</item>
+        <item>가산두산위브아파트</item>
+        <item>가산 골말공원</item>
     </string-array>
 
 </resources>
