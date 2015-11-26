@@ -1,10 +1,15 @@
 package org.android.safetyroad;
 
 import android.app.Activity;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -12,12 +17,15 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.skp.Tmap.TMapView;
 
 public class RouteSearchActivity extends Activity {
 
 	public static final String APP_KEY = "edcbe7e3-2ade-3654-93a9-90c940f92470";
+	public static final String urgentNumber = "01071881348";
+	
 	private TMapView tmap;
 	private ImageButton entirePath;
 	private ImageButton normalMsg;
@@ -83,6 +91,11 @@ public class RouteSearchActivity extends Activity {
 				if(!flagUrgentMsg){
 					flagUrgentMsg=true;
 					urgentMsg.setSelected(true);
+					
+
+					String smsNum = urgentNumber;
+				    String smsText = "이미 너의 마음속 이야 ";
+				   sendSMS(smsNum,smsText);
 				}
 				else{
 					flagUrgentMsg=false;
@@ -116,5 +129,50 @@ public class RouteSearchActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
+
+	//문자 전송
+		
+			public void sendSMS(String smsNumber, String smsText){
+				
+			    PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT_ACTION"), 0);
+			    PendingIntent deliveredIntent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED_ACTION"), 0);
+			 
+			    registerReceiver(new BroadcastReceiver() {
+			        @Override
+			        public void onReceive(Context mContext, Intent intent) {
+			            switch(getResultCode()){
+			                case Activity.RESULT_OK:
+			                    // 전송 성공
+			                    Toast.makeText(mContext, "전송 완료", Toast.LENGTH_SHORT).show();
+			                    break;
+			                    default :
+			                    // 전송 실패
+			                    Toast.makeText(mContext, "전송 실패", Toast.LENGTH_SHORT).show();
+			            }
+			         }
+			    }, new IntentFilter("SMS_SENT_ACTION"));
+			 
+			    registerReceiver(new BroadcastReceiver() {
+			        @Override
+			        public void onReceive(Context mContext, Intent intent) {
+			            switch (getResultCode()){
+			                case Activity.RESULT_OK:
+			                    // 도착 완료
+			                    Toast.makeText(mContext, "SMS 도착 완료", Toast.LENGTH_SHORT).show();
+			                    break;
+			                case Activity.RESULT_CANCELED:
+			                    // 도착 안됨
+			                    Toast.makeText(mContext, "SMS 도착 실패", Toast.LENGTH_SHORT).show();
+			                    break;
+			            }
+			        }
+			    }, new IntentFilter("SMS_DELIVERED_ACTION"));
+			 
+			    SmsManager mSmsManager = SmsManager.getDefault();
+			    mSmsManager.sendTextMessage(smsNumber, null, smsText, sentIntent, deliveredIntent);
+			}
+
+
 
 }
