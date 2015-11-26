@@ -103,7 +103,8 @@
                     android:id="@+id/urgentMessage"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:background="@drawable/route_urgent" />
+                    android:background="@drawable/route_urgent"
+                    android:onClick="sendSMS" />
 
                 <TextView
                     android:layout_width="wrap_content"

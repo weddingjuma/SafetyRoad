@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -89,11 +90,10 @@ public class SettingActivity extends Activity {
 			int tmp = pref.getInt("SET_TIME", 10);
 			settingMin(tmp);
 		}
-			
 
 		setting_1min.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				settingMin(1);				
+				settingMin(1);
 			}
 		});
 		setting_3min.setOnClickListener(new OnClickListener() {
@@ -135,15 +135,15 @@ public class SettingActivity extends Activity {
 		builder.setView(inputView);
 
 		// 취소 버튼
-		builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Toast.makeText(getApplicationContext(), "취소", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Cancle", Toast.LENGTH_SHORT).show();
 			}
 		});
 
 		// 확인 버튼
-		builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 
@@ -220,12 +220,10 @@ public class SettingActivity extends Activity {
 			}
 
 			ListData mData = mListData.get(position);
+			Log.d("testing", "1" + mData.mName + ":" + mData.mNumber);
 
 			holder.mName.setText(mData.mName);
 			holder.mNumber.setText(mData.mNumber);
-			
-			editor.putString("Name_"+position, mData.mName);
-			editor.putInt("Number_"+position, Integer.parseInt(mData.mNumber));
 
 			ImageButton deleteBtn = (ImageButton) convertView.findViewById(R.id.listDeleteButton);
 			// Toast.makeText(SettingActivity.this, "deleteBtn",
@@ -233,7 +231,7 @@ public class SettingActivity extends Activity {
 			deleteBtn.setOnClickListener(new ImageButton.OnClickListener() {
 				public void onClick(View v) {
 					ListData mData = mAdapter.mListData.get(position);
-					Toast.makeText(SettingActivity.this, mData.mName + "를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+					Toast.makeText(SettingActivity.this, mData.mName + "is deleted.", Toast.LENGTH_SHORT).show();
 					remove(position);
 				}
 			});
@@ -244,6 +242,12 @@ public class SettingActivity extends Activity {
 
 		public void addItem(String mName, String mNumber) {
 			ListData addInfo = new ListData();
+			
+			editor.putString("Name_0", mName);
+			editor.putString("Number_0", mNumber);
+			editor.putBoolean("isNameExist", true);
+			Log.d("testing", "2" + mName + ":" + mNumber);
+
 			addInfo.mName = mName;
 			addInfo.mNumber = mNumber;
 
@@ -267,7 +271,7 @@ public class SettingActivity extends Activity {
 		editor.putInt("SET_TIME", time);
 		editor.putBoolean("isDefaultUse", false);
 		editor.commit();
-		
+
 		setMinuteImg(time);
 	}
 
