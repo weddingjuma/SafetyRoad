@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -118,12 +117,9 @@ public class EntireMapActivity extends Activity {
 				intent.putExtra("depLat", startPoint.getLatitude());
 				intent.putExtra("depLon", startPoint.getLongitude());
 				intent.putExtra("arrLat", endPoint.getLatitude());
-				intent.putExtra("arrLon", endPoint.getLongitude());		
+				intent.putExtra("arrLon", endPoint.getLongitude());	
 				
 				startActivityForResult(intent, REQUEST_CODE_ROUTE);
-				
-				/*Intent intent = new Intent(getApplicationContext(), RouteSearchActivity.class);
-				startActivityForResult(intent, REQUEST_CODE_ROUTE);*/
 			}
 		});
 		
@@ -291,8 +287,8 @@ public class EntireMapActivity extends Activity {
 		cerOfCCTV = new ArrayList<TMapPoint>();
 			
 		for(int i=0; i<posOfCCTV.size(); i++){
-			TMapPoint leftTop = tmap.getLeftTopPoint();
-			TMapPoint rightBottom = tmap.getRightBottomPoint();
+			TMapPoint leftTop = (TMapPoint) tmap.getLeftTopPoint();
+			TMapPoint rightBottom = (TMapPoint) tmap.getRightBottomPoint();
 			
 			if(rightBottom.getLatitude() < posOfCCTV.get(i).getLatitude() &&
 					 posOfCCTV.get(i).getLatitude() < leftTop.getLatitude()){

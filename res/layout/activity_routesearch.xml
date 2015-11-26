@@ -11,7 +11,7 @@
         android:background="#34495e"
         android:paddingBottom="4dp" >
 
-        <ImageView
+        <ImageButton
             android:id="@+id/backBtn"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -28,7 +28,7 @@
             android:textSize="24dp"
             android:textStyle="bold" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/settingBtn"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -129,6 +129,7 @@
                     android:textSize="20dp" />
 
                 <TextView
+                    android:id="@+id/namenunTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

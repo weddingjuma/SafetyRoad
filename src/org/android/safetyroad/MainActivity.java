@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
-				if (!(depPoint.getLat()==0 && arrPoint.getLat()==0)) {
+				if (!(depPoint.getLat()==0 || arrPoint.getLat()==0)) {
 
 					Intent intent = new Intent(getApplicationContext(), EntireMapActivity.class);
 					intent.putExtra("depLon", depPoint.getLon());
