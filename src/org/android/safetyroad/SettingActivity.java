@@ -25,13 +25,18 @@ public class SettingActivity extends Activity {
 	private ListViewAdapter mAdapter = null;
 	private ImageButton backBtn;
 	private ImageButton setting_1min, setting_3min, setting_5min, setting_10min, setting_15min;
+	private int defaultMin = 10;
+	SharedPreferences pref;
+	SharedPreferences.Editor editor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_setting);
-		
+		pref = getSharedPreferences("sharedData", MODE_PRIVATE);
+		editor = pref.edit();
+
 		/***********************
 		 * Back Button
 		 ***********************/
@@ -67,7 +72,7 @@ public class SettingActivity extends Activity {
 				Toast.makeText(SettingActivity.this, mData.mName + "  " + mData.mNumber, Toast.LENGTH_SHORT).show();
 			}
 		});
-		
+
 		/***********************
 		 * Miniute Button
 		 ***********************/
@@ -76,10 +81,19 @@ public class SettingActivity extends Activity {
 		setting_5min = (ImageButton) findViewById(R.id.setting_5min);
 		setting_10min = (ImageButton) findViewById(R.id.setting_10min);
 		setting_15min = (ImageButton) findViewById(R.id.setting_15min);
-		
+
+		// default minute
+		if (pref.getBoolean("isDefaultUse", true))
+			settingMin(defaultMin);
+		else {
+			int tmp = pref.getInt("SET_TIME", 10);
+			settingMin(tmp);
+		}
+			
+
 		setting_1min.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				settingMin(1);
+				settingMin(1);				
 			}
 		});
 		setting_3min.setOnClickListener(new OnClickListener() {
@@ -209,6 +223,9 @@ public class SettingActivity extends Activity {
 
 			holder.mName.setText(mData.mName);
 			holder.mNumber.setText(mData.mNumber);
+			
+			editor.putString("Name_"+position, mData.mName);
+			editor.putInt("Number_"+position, Integer.parseInt(mData.mNumber));
 
 			ImageButton deleteBtn = (ImageButton) convertView.findViewById(R.id.listDeleteButton);
 			// Toast.makeText(SettingActivity.this, "deleteBtn",
@@ -244,10 +261,59 @@ public class SettingActivity extends Activity {
 
 	}
 
-	private void settingMin(int time){
-		SharedPreferences pref = getSharedPreferences("sharedData", MODE_PRIVATE);
-		SharedPreferences.Editor editor = pref.edit();
+	private void settingMin(int time) {
+		pref = getSharedPreferences("sharedData", MODE_PRIVATE);
+		editor = pref.edit();
 		editor.putInt("SET_TIME", time);
+		editor.putBoolean("isDefaultUse", false);
 		editor.commit();
+		
+		setMinuteImg(time);
+	}
+
+	private void setMinuteImg(int time) {
+		switch (time) {
+		case 1:
+			setting_1min.setSelected(true);
+			setting_3min.setSelected(false);
+			setting_5min.setSelected(false);
+			setting_10min.setSelected(false);
+			setting_15min.setSelected(false);
+			break;
+
+		case 3:
+			setting_1min.setSelected(false);
+			setting_3min.setSelected(true);
+			setting_5min.setSelected(false);
+			setting_10min.setSelected(false);
+			setting_15min.setSelected(false);
+			break;
+
+		case 5:
+			setting_1min.setSelected(false);
+			setting_3min.setSelected(false);
+			setting_5min.setSelected(true);
+			setting_10min.setSelected(false);
+			setting_15min.setSelected(false);
+			break;
+
+		case 10:
+			setting_1min.setSelected(false);
+			setting_3min.setSelected(false);
+			setting_5min.setSelected(false);
+			setting_10min.setSelected(true);
+			setting_15min.setSelected(false);
+			break;
+
+		case 15:
+			setting_1min.setSelected(false);
+			setting_3min.setSelected(false);
+			setting_5min.setSelected(false);
+			setting_10min.setSelected(false);
+			setting_15min.setSelected(true);
+			break;
+
+		}
+
 	}
 }
