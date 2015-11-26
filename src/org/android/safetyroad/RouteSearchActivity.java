@@ -5,12 +5,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xml.sax.SAXException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,6 +28,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -57,9 +63,14 @@ public class RouteSearchActivity extends Activity {
 	private ImageButton urgentMsg;
 	private ImageButton backBtn;
 	private ImageButton settingBtn;
+	private TextView nameunTime;
+	private TextView textTime;
+
+	private double nameunDistance;
 
 	private TMapPoint startPoint;
 	private TMapPoint endPoint;
+	private TMapPoint currPoint;
 	
 	private ArrayList<TMapPoint> posOfCCTV;
 	private ArrayList<TMapPoint> cerOfCCTV;
@@ -80,6 +91,10 @@ public class RouteSearchActivity extends Activity {
 		setContentView(R.layout.activity_routesearch);
 
 		tmap = (TMapView) findViewById(R.id.TMap);
+		nameunTime = (TextView) findViewById(R.id.namenunTime);
+		textTime = (TextView) findViewById(R.id.textTime);
+		
+		currPoint = new TMapPoint(0, 0);
 
 		Intent intent = getIntent();
 		depLat = intent.getDoubleExtra("depLat", 0);
@@ -90,13 +105,22 @@ public class RouteSearchActivity extends Activity {
 		startPoint = new TMapPoint(depLat, depLon);
 		endPoint = new TMapPoint(arrLat, arrLon);
 		
-		StartEndMaker("start", startPoint);
-		StartEndMaker("end", endPoint);
+		StartEndCurrMaker("start", startPoint);
+		StartEndCurrMaker("end", endPoint);
 		
 		new setPointOfCCTV().execute();		
 		new MapRegisterTask().execute("");	
 		
 		customZoomLevel(startPoint, endPoint);
+		
+		GpsInfo gps = new GpsInfo(RouteSearchActivity.this);
+		if (gps.isGetLocation()) {
+			currPoint.setLatitude((double)gps.getLatitude());
+			currPoint.setLongitude((double)gps.getLongitude());
+			StartEndCurrMaker("curr", currPoint);
+		}
+		
+		new findCurrPath().execute(currPoint,endPoint);
 		
 		pref = getSharedPreferences("sharedData", MODE_PRIVATE);
 		Minute = pref.getInt("SET_TIME", 10);
@@ -109,7 +133,8 @@ public class RouteSearchActivity extends Activity {
 			}
 		});
 
-		flagEntirePath = flagNorMsg = false;
+		flagEntirePath = true;
+		flagNorMsg = false;
 
 		entirePath = (ImageButton) findViewById(R.id.entirePath);
 		entirePath.setOnClickListener(new OnClickListener() {
@@ -121,11 +146,14 @@ public class RouteSearchActivity extends Activity {
 					entirePath.setSelected(true);
 					
 		        	new RouteSearchTask().execute(startPoint,endPoint);
+		        	textTime.setText("예측소요시간");
 				} else {
 					flagEntirePath = false;
 					entirePath.setSelected(false);
 					
 					tmap.removeTMapPolyLine("path0");
+					textTime.setText("실제소요시간");
+					nameunTime.setText((int)(nameunDistance/50.0) + " min");
 				}
 			}
 		});
@@ -137,6 +165,8 @@ public class RouteSearchActivity extends Activity {
 				if (!flagNorMsg) {
 					flagNorMsg = true;
 					normalMsg.setSelected(true);
+					
+					
 				} else {
 					flagNorMsg = false;
 					normalMsg.setSelected(false);
@@ -186,6 +216,50 @@ public class RouteSearchActivity extends Activity {
 			}
 		});
 
+	}
+	
+	public class findCurrPath extends AsyncTask <TMapPoint, Integer, TMapPolyLine> {
+		@Override
+		protected void onPreExecute(){
+		/*	Dialog = new ProgressDialog(RouteSearchActivity.this); 
+			Dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); 
+			Dialog.setMessage("Loading..."); 
+			Dialog.show(); 
+			super.onPreExecute(); */
+		}
+		@Override
+		protected TMapPolyLine doInBackground(TMapPoint... params) {
+			TMapPoint curr = params[0];
+			TMapPoint end = params[1];
+			
+			TMapData data = new TMapData();
+			try {				
+				TMapPolyLine path = new TMapPolyLine();
+				path = data.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, curr, end);
+				
+				return path;
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(TMapPolyLine path) {
+			nameunDistance=0;
+			
+			if (path != null) {
+				
+				path.setLineColor(0x33495e);
+				path.setLineWidth(15);
+				nameunDistance += path.getDistance();
+				tmap.addTMapPolyLine("curr", path);
+				nameunTime.setText((int)(nameunDistance/50.0) + " min");
+			}
+			
+		}
+		
 	}
 	
 	public void customZoomLevel(TMapPoint start, TMapPoint end){
@@ -407,7 +481,7 @@ public class RouteSearchActivity extends Activity {
 				
 				for(int i=0; i<path.size(); i++){
 					
-					path.get(i).setLineColor(0x33495e);
+					path.get(i).setLineColor(Color.GRAY);
 					path.get(i).setLineWidth(15);
 					totalDistance += path.get(i).getDistance();
 					
@@ -415,15 +489,14 @@ public class RouteSearchActivity extends Activity {
 					//tmap.addTMapPath("path"+i, path.get(i));					
 				}
 
-				TextView totalMin = (TextView) findViewById(R.id.namenunTime);
-				totalMin.setText((int)(totalDistance/50.0) + " min");
+				nameunTime.setText((int)(totalDistance/50.0) + " min");
 			}
 			
 			//Dialog.dismiss();
 		}
 	}
 	
-	public void StartEndMaker(String name, TMapPoint pos){
+	public void StartEndCurrMaker(String name, TMapPoint pos){
 		TMapMarkerItem tItem = new TMapMarkerItem();
 		tItem.setTMapPoint(pos);
 		tItem.setName(name);
@@ -435,6 +508,10 @@ public class RouteSearchActivity extends Activity {
 		}
 		else if(name.equals("end")){
 			Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.map_arrive_mark)).getBitmap();
+			tItem.setIcon(bm);
+		}
+		else if(name.equals("curr")){
+			Bitmap bm = ((BitmapDrawable)getResources().getDrawable(R.drawable.map_point_mark)).getBitmap();
 			tItem.setIcon(bm);
 		}
 		
