@@ -36,6 +36,8 @@ public class RouteSearchActivity extends Activity {
 	private SharedPreferences pref;
 
 	private boolean flagEntirePath, flagNorMsg;
+	
+	private ImageButton backBtn, settingBtn;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +109,22 @@ public class RouteSearchActivity extends Activity {
 				AlertDialog dialog = builder.create();
 				dialog.show();
 
+			}
+		});
+		
+		backBtn = (ImageButton) findViewById(R.id.backBtn);		
+		settingBtn = (ImageButton) findViewById(R.id.settingBtn);
+		
+		backBtn.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				finish();
+			}
+		});
+		
+		settingBtn.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+				startActivity(intent);
 			}
 		});
 

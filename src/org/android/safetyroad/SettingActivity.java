@@ -24,11 +24,14 @@ import java.util.ArrayList;
 public class SettingActivity extends Activity {
 	private ListView mListView = null;
 	private ListViewAdapter mAdapter = null;
+	
 	private ImageButton backBtn;
 	private ImageButton setting_1min, setting_3min, setting_5min, setting_10min, setting_15min;
+	
 	private int defaultMin = 10;
 	SharedPreferences pref;
 	SharedPreferences.Editor editor;
+		
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
