@@ -125,7 +125,14 @@ public class EntireMapActivity extends Activity {
 				/*Intent intent = new Intent(getApplicationContext(), RouteSearchActivity.class);
 				startActivityForResult(intent, REQUEST_CODE_ROUTE);*/
 			}
-		});		
+		});
+		
+		tmap.setOnEnableScrollWithZoomLevelListener(new TMapView.OnEnableScrollWithZoomLevelCallback() {
+				@Override
+				public void onEnableScrollWithZoomLevelEvent(float zoom, TMapPoint centerPoint) {
+					setMarkerOfCCTV();
+				}
+		});
 				
 	}
 	
