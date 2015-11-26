@@ -26,14 +26,15 @@ import com.skp.Tmap.TMapView;
 public class RouteSearchActivity extends Activity {
 
 	public static final String APP_KEY = "edcbe7e3-2ade-3654-93a9-90c940f92470";
-	public static final String urgentNumber = "01052040392";
-	
+	public String urgentNumber;
+
 	private TMapView tmap;
 	private ImageButton entirePath;
 	private ImageButton normalMsg;
 	private ImageButton urgentMsg;
 	private int Minute;
-	
+	private SharedPreferences pref;
+
 	private boolean flagEntirePath, flagNorMsg;
 
 	@Override
@@ -43,77 +44,74 @@ public class RouteSearchActivity extends Activity {
 		setContentView(R.layout.activity_routesearch);
 
 		tmap = (TMapView) findViewById(R.id.TMap);
-		
-		new MapRegisterTask().execute("");	
-		
+
+		new MapRegisterTask().execute("");
+
 		Intent intent = getIntent();
-		
-		SharedPreferences pref = getSharedPreferences("sharedData",MODE_PRIVATE);
+
+		pref = getSharedPreferences("sharedData", MODE_PRIVATE);
 		Minute = pref.getInt("SET_TIME", 10);
-		Log.d("testing","" + Minute);
-		
-		flagEntirePath=flagNorMsg=false;
-		
+		Log.d("testing", "" + Minute);
+
+		flagEntirePath = flagNorMsg = false;
+
 		entirePath = (ImageButton) findViewById(R.id.entirePath);
-		entirePath.setOnClickListener(new OnClickListener() {			
+		entirePath.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(!flagEntirePath){
-					flagEntirePath=true;
+				if (!flagEntirePath) {
+					flagEntirePath = true;
 					entirePath.setSelected(true);
-				}
-				else{
-					flagEntirePath=false;
+				} else {
+					flagEntirePath = false;
 					entirePath.setSelected(false);
 				}
 			}
 		});
 		normalMsg = (ImageButton) findViewById(R.id.normalMessage);
-		normalMsg.setOnClickListener(new OnClickListener() {			
+		normalMsg.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(!flagNorMsg){
-					flagNorMsg=true;
+				if (!flagNorMsg) {
+					flagNorMsg = true;
 					normalMsg.setSelected(true);
-				}
-				else{
-					flagNorMsg=false;
+				} else {
+					flagNorMsg = false;
 					normalMsg.setSelected(false);
 				}
 			}
 		});
-		
+
 		urgentMsg = (ImageButton) findViewById(R.id.urgentMessage);
-		urgentMsg.setOnClickListener(new OnClickListener() {			
+		urgentMsg.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				AlertDialog.Builder builder = new AlertDialog.Builder(RouteSearchActivity.this);
 
-				builder.setTitle("Alert")
-						.setMessage("정말정말 긴급메시지를 전송하겠습니까?")
-						.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int whichButton) {
-								String smsNum = urgentNumber;
-								String smsText = "[긴급_테스트] 현재위치는 ~~입니다. 코딩의 늪에 빠졋어요. 위험해요 엉엉엉 살려주세요";
-								sendSMS(smsNum,smsText);
-							}
-						})
-						.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int whichButton) {
-								
-							}
-						});
+				builder.setTitle("Alert").setMessage("Transfer urgent message?")
+						.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						String smsNum = pref.getString("Number_0", "01052040392");
+						String smsText = "HELP";
+						Log.d("testing", smsNum);
+						sendSMS(smsNum, smsText);
+					}
+				}).setNegativeButton("CANCLE", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+
+					}
+				});
 				AlertDialog dialog = builder.create();
-				dialog.show();	
-				
+				dialog.show();
+
 			}
 		});
-		
+
 	}
-	
+
 	class MapRegisterTask extends AsyncTask<String, Integer, Boolean> {
 		@Override
 		protected Boolean doInBackground(String... params) {
@@ -126,7 +124,7 @@ public class RouteSearchActivity extends Activity {
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
 			tmap.setIconVisibility(true);
-			//tmap.setZoomLevel(16);
+			// tmap.setZoomLevel(16);
 			tmap.setMapType(TMapView.MAPTYPE_STANDARD);
 		}
 	}
@@ -137,50 +135,47 @@ public class RouteSearchActivity extends Activity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
 
-	//문자 전송
-		
-			public void sendSMS(String smsNumber, String smsText){
-				
-			    PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT_ACTION"), 0);
-			    PendingIntent deliveredIntent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED_ACTION"), 0);
-			 
-			    registerReceiver(new BroadcastReceiver() {
-			        @Override
-			        public void onReceive(Context mContext, Intent intent) {
-			            switch(getResultCode()){
-			                case Activity.RESULT_OK:
-			                    // 전송 성공
-			                    Toast.makeText(mContext, "전송 완료", Toast.LENGTH_SHORT).show();
-			                    break;
-			                    default :
-			                    // 전송 실패
-			                    Toast.makeText(mContext, "전송 실패", Toast.LENGTH_SHORT).show();
-			            }
-			         }
-			    }, new IntentFilter("SMS_SENT_ACTION"));
-			 
-			    registerReceiver(new BroadcastReceiver() {
-			        @Override
-			        public void onReceive(Context mContext, Intent intent) {
-			            switch (getResultCode()){
-			                case Activity.RESULT_OK:
-			                    // 도착 완료
-			                    Toast.makeText(mContext, "SMS 도착 완료", Toast.LENGTH_SHORT).show();
-			                    break;
-			                case Activity.RESULT_CANCELED:
-			                    // 도착 안됨
-			                    Toast.makeText(mContext, "SMS 도착 실패", Toast.LENGTH_SHORT).show();
-			                    break;
-			            }
-			        }
-			    }, new IntentFilter("SMS_DELIVERED_ACTION"));
-			 
-			    SmsManager mSmsManager = SmsManager.getDefault();
-			    mSmsManager.sendTextMessage(smsNumber, null, smsText, sentIntent, deliveredIntent);
+	// Send SMS
+
+	public void sendSMS(String smsNumber, String smsText) {
+
+		PendingIntent sentIntent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_SENT_ACTION"), 0);
+		PendingIntent deliveredIntent = PendingIntent.getBroadcast(this, 0, new Intent("SMS_DELIVERED_ACTION"), 0);
+
+		registerReceiver(new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context mContext, Intent intent) {
+				switch (getResultCode()) {
+				case Activity.RESULT_OK:
+					// �쟾�넚 �꽦怨�
+					Toast.makeText(mContext, "Send Finish", Toast.LENGTH_SHORT).show();
+					break;
+				default:
+					// �쟾�넚 �떎�뙣
+					Toast.makeText(mContext, "Send Fail", Toast.LENGTH_SHORT).show();
+				}
 			}
+		}, new IntentFilter("SMS_SENT_ACTION"));
 
+		registerReceiver(new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context mContext, Intent intent) {
+				switch (getResultCode()) {
+				case Activity.RESULT_OK:
+					// �룄李� �셿猷�
+					Toast.makeText(mContext, "SMS arrive Finish", Toast.LENGTH_SHORT).show();
+					break;
+				case Activity.RESULT_CANCELED:
+					// �룄李� �븞�맖
+					Toast.makeText(mContext, "SMS arrive Fail", Toast.LENGTH_SHORT).show();
+					break;
+				}
+			}
+		}, new IntentFilter("SMS_DELIVERED_ACTION"));
 
+		SmsManager mSmsManager = SmsManager.getDefault();
+		mSmsManager.sendTextMessage(smsNumber, null, smsText, sentIntent, deliveredIntent);
+	}
 
 }

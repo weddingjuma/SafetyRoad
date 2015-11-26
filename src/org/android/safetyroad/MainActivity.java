@@ -1,6 +1,8 @@
 package org.android.safetyroad;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -53,13 +55,27 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
-				Intent intent = new Intent(getApplicationContext(), EntireMapActivity.class);
-				intent.putExtra("depLon", depPoint.getLon());
-				intent.putExtra("depLat", depPoint.getLat());
-				intent.putExtra("arrLon", arrPoint.getLon());
-				intent.putExtra("arrLat", arrPoint.getLat());
+				if (!(depPoint.getLat()==0 && arrPoint.getLat()==0)) {
 
-				startActivityForResult(intent, REQUEST_CODE_MAP);
+					Intent intent = new Intent(getApplicationContext(), EntireMapActivity.class);
+					intent.putExtra("depLon", depPoint.getLon());
+					intent.putExtra("depLat", depPoint.getLat());
+					intent.putExtra("arrLon", arrPoint.getLon());
+					intent.putExtra("arrLat", arrPoint.getLat());
+
+					startActivityForResult(intent, REQUEST_CODE_MAP);
+				} else {
+					AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+					builder.setTitle("Notice").setMessage("Check the address").setPositiveButton("OK",
+							new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton) {
+							
+						}
+					});
+					AlertDialog dialog = builder.create();
+					dialog.show();
+				}
 			}
 		});
 

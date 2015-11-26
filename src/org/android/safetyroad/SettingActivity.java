@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,13 +26,18 @@ public class SettingActivity extends Activity {
 	private ListViewAdapter mAdapter = null;
 	private ImageButton backBtn;
 	private ImageButton setting_1min, setting_3min, setting_5min, setting_10min, setting_15min;
+	private int defaultMin = 10;
+	SharedPreferences pref;
+	SharedPreferences.Editor editor;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_setting);
-		
+		pref = getSharedPreferences("sharedData", MODE_PRIVATE);
+		editor = pref.edit();
+
 		/***********************
 		 * Back Button
 		 ***********************/
@@ -67,7 +73,7 @@ public class SettingActivity extends Activity {
 				Toast.makeText(SettingActivity.this, mData.mName + "  " + mData.mNumber, Toast.LENGTH_SHORT).show();
 			}
 		});
-		
+
 		/***********************
 		 * Miniute Button
 		 ***********************/
@@ -76,7 +82,15 @@ public class SettingActivity extends Activity {
 		setting_5min = (ImageButton) findViewById(R.id.setting_5min);
 		setting_10min = (ImageButton) findViewById(R.id.setting_10min);
 		setting_15min = (ImageButton) findViewById(R.id.setting_15min);
-		
+
+		// default minute
+		if (pref.getBoolean("isDefaultUse", true))
+			settingMin(defaultMin);
+		else {
+			int tmp = pref.getInt("SET_TIME", 10);
+			settingMin(tmp);
+		}
+
 		setting_1min.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				settingMin(1);
@@ -121,15 +135,15 @@ public class SettingActivity extends Activity {
 		builder.setView(inputView);
 
 		// 취소 버튼
-		builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("Cancle", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Toast.makeText(getApplicationContext(), "취소", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), "Cancle", Toast.LENGTH_SHORT).show();
 			}
 		});
 
 		// 확인 버튼
-		builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 
@@ -206,6 +220,7 @@ public class SettingActivity extends Activity {
 			}
 
 			ListData mData = mListData.get(position);
+			Log.d("testing", "1" + mData.mName + ":" + mData.mNumber);
 
 			holder.mName.setText(mData.mName);
 			holder.mNumber.setText(mData.mNumber);
@@ -216,7 +231,7 @@ public class SettingActivity extends Activity {
 			deleteBtn.setOnClickListener(new ImageButton.OnClickListener() {
 				public void onClick(View v) {
 					ListData mData = mAdapter.mListData.get(position);
-					Toast.makeText(SettingActivity.this, mData.mName + "를 삭제하였습니다.", Toast.LENGTH_SHORT).show();
+					Toast.makeText(SettingActivity.this, mData.mName + "is deleted.", Toast.LENGTH_SHORT).show();
 					remove(position);
 				}
 			});
@@ -227,6 +242,12 @@ public class SettingActivity extends Activity {
 
 		public void addItem(String mName, String mNumber) {
 			ListData addInfo = new ListData();
+			
+			editor.putString("Name_0", mName);
+			editor.putString("Number_0", mNumber);
+			editor.putBoolean("isNameExist", true);
+			Log.d("testing", "2" + mName + ":" + mNumber);
+
 			addInfo.mName = mName;
 			addInfo.mNumber = mNumber;
 
@@ -244,10 +265,59 @@ public class SettingActivity extends Activity {
 
 	}
 
-	private void settingMin(int time){
-		SharedPreferences pref = getSharedPreferences("sharedData", MODE_PRIVATE);
-		SharedPreferences.Editor editor = pref.edit();
+	private void settingMin(int time) {
+		pref = getSharedPreferences("sharedData", MODE_PRIVATE);
+		editor = pref.edit();
 		editor.putInt("SET_TIME", time);
+		editor.putBoolean("isDefaultUse", false);
 		editor.commit();
+
+		setMinuteImg(time);
+	}
+
+	private void setMinuteImg(int time) {
+		switch (time) {
+		case 1:
+			setting_1min.setSelected(true);
+			setting_3min.setSelected(false);
+			setting_5min.setSelected(false);
+			setting_10min.setSelected(false);
+			setting_15min.setSelected(false);
+			break;
+
+		case 3:
+			setting_1min.setSelected(false);
+			setting_3min.setSelected(true);
+			setting_5min.setSelected(false);
+			setting_10min.setSelected(false);
+			setting_15min.setSelected(false);
+			break;
+
+		case 5:
+			setting_1min.setSelected(false);
+			setting_3min.setSelected(false);
+			setting_5min.setSelected(true);
+			setting_10min.setSelected(false);
+			setting_15min.setSelected(false);
+			break;
+
+		case 10:
+			setting_1min.setSelected(false);
+			setting_3min.setSelected(false);
+			setting_5min.setSelected(false);
+			setting_10min.setSelected(true);
+			setting_15min.setSelected(false);
+			break;
+
+		case 15:
+			setting_1min.setSelected(false);
+			setting_3min.setSelected(false);
+			setting_5min.setSelected(false);
+			setting_10min.setSelected(false);
+			setting_15min.setSelected(true);
+			break;
+
+		}
+
 	}
 }

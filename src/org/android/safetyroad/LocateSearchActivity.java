@@ -374,7 +374,7 @@ public class LocateSearchActivity extends Activity {
 
 				builder.setTitle("Notice")
 						.setMessage("Invalid address")
-						.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+						.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								isInvalid = false;
 							}
