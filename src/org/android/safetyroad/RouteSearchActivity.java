@@ -2,12 +2,15 @@ package org.android.safetyroad;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
 
 import com.skp.Tmap.TMapView;
@@ -19,6 +22,7 @@ public class RouteSearchActivity extends Activity {
 	private ImageButton entirePath;
 	private ImageButton normalMsg;
 	private ImageButton urgentMsg;
+	private int Minute;
 	
 	private boolean flagEntirePath, flagNorMsg, flagUrgentMsg;
 
@@ -34,7 +38,9 @@ public class RouteSearchActivity extends Activity {
 		
 		Intent intent = getIntent();
 		
-		
+		SharedPreferences pref = getSharedPreferences("sharedData",MODE_PRIVATE);
+		Minute = pref.getInt("SET_TIME", 10);
+		Log.d("testing","" + Minute);
 		
 		flagEntirePath=flagNorMsg=flagUrgentMsg=false;
 		

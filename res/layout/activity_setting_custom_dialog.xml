@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/editPhoneNumber"
             android:hint="번호 입력 (숫자만)"
+            android:inputType="number"
             />
 
     </LinearLayout>
