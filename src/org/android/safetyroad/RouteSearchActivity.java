@@ -1,9 +1,11 @@
 package org.android.safetyroad;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -24,7 +26,7 @@ import com.skp.Tmap.TMapView;
 public class RouteSearchActivity extends Activity {
 
 	public static final String APP_KEY = "edcbe7e3-2ade-3654-93a9-90c940f92470";
-	public static final String urgentNumber = "01071881348";
+	public static final String urgentNumber = "01052040392";
 	
 	private TMapView tmap;
 	private ImageButton entirePath;
@@ -32,7 +34,7 @@ public class RouteSearchActivity extends Activity {
 	private ImageButton urgentMsg;
 	private int Minute;
 	
-	private boolean flagEntirePath, flagNorMsg, flagUrgentMsg;
+	private boolean flagEntirePath, flagNorMsg;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class RouteSearchActivity extends Activity {
 		Minute = pref.getInt("SET_TIME", 10);
 		Log.d("testing","" + Minute);
 		
-		flagEntirePath=flagNorMsg=flagUrgentMsg=false;
+		flagEntirePath=flagNorMsg=false;
 		
 		entirePath = (ImageButton) findViewById(R.id.entirePath);
 		entirePath.setOnClickListener(new OnClickListener() {			
@@ -88,19 +90,25 @@ public class RouteSearchActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if(!flagUrgentMsg){
-					flagUrgentMsg=true;
-					urgentMsg.setSelected(true);
-					
+				AlertDialog.Builder builder = new AlertDialog.Builder(RouteSearchActivity.this);
 
-					String smsNum = urgentNumber;
-				    String smsText = "이미 너의 마음속 이야 ";
-				   sendSMS(smsNum,smsText);
-				}
-				else{
-					flagUrgentMsg=false;
-					urgentMsg.setSelected(false);
-				}
+				builder.setTitle("Alert")
+						.setMessage("정말정말 긴급메시지를 전송하겠습니까?")
+						.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								String smsNum = urgentNumber;
+								String smsText = "[긴급_테스트] 현재위치는 ~~입니다. 코딩의 늪에 빠졋어요. 위험해요 엉엉엉 살려주세요";
+								sendSMS(smsNum,smsText);
+							}
+						})
+						.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								
+							}
+						});
+				AlertDialog dialog = builder.create();
+				dialog.show();	
+				
 			}
 		});
 		
